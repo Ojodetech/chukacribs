@@ -1,0 +1,11 @@
+.hidden{display:none !important}
+.muted-small{font-size:0.9rem;margin-top:0.5rem;color:#666}
+.muted-note{font-size:0.85rem;color:#666;margin-top:0.3rem}
+.modal-content--wide{max-width:700px}
+.modal-scroll{max-height:500px;overflow-y:auto}
+.label-strong{font-weight:600;margin-bottom:0.8rem;display:block}
+.amenities-row{display:flex;gap:2rem;align-items:center;flex-wrap:wrap}
+.amenity-item{display:flex;align-items:center}
+.amenity-label{margin:0 0 0 0.5rem;font-weight:normal;cursor:pointer}
+.empty-property-msg{font-size:0.9rem;margin-top:0.5rem}
+.empty-state-msg{text-align:center;color:#666}

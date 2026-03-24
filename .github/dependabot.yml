@@ -1,0 +1,101 @@
+version: 2
+updates:
+  # Node.js dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "02:00"
+    # Disable auto-merge - review PRs manually
+    open-pull-requests-limit: 5
+    pull-request-branch-name:
+      separator: "/"
+    reviewers:
+      - "devops-team"
+    assignees:
+      - "backend-lead"
+    labels:
+      - "dependencies"
+      - "npm"
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    ignore:
+      # Packages that require careful review
+      - dependency-name: "mongoose"
+        versions: ["5.x"]
+      - dependency-name: "express"
+        versions: ["4.x"  # Keep on version 4
+    # Group dependency updates
+    groups:
+      development:
+        dependency-types:
+          - "dev"
+        patterns:
+          - "*test*"
+          - "*lint*"
+          - "*format*"
+      patch:
+        dependency-types:
+          - direct
+        update-types:
+          - patch
+      security:
+        patterns:
+          - "*security*"
+          - "*crypto*"
+          - "*auth*"
+        update-types:
+          - patch
+          - minor
+    # Commit message customization
+    commit-message:
+      prefix: "chore: "
+      prefix-development: "chore(dev): "
+      include: "scope,  type"
+    # Pull request customization
+    pull-request-branch-name:
+      separator: "-"
+
+  # Docker configuration
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "devops-team"
+    assignees:
+      - "devops-team"
+    labels:
+      - "docker"
+      - "dependencies"
+    allow:
+      - dependency-type: "direct"
+    ignore:
+      - dependency-name: "node"
+        versions: ["17.x", "19.x"]  # Skip intermediate versions
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "02:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "devops-team"
+    assignees:
+      - "devops-team"
+    labels:
+      - "github-actions"
+      - "ci-cd"
+    # Pin major versions of actions
+    allow:
+      - dependency-type: "direct"
+    commit-message:
+      prefix: "ci: "

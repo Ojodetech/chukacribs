@@ -1,0 +1,29 @@
+node_modules/
+dist/
+build/
+coverage/
+logs/
+*.min.js
+
+# Test files - these have intentional unused params in mocks/stubs
+__tests__/
+test-*.js
+*.test.js
+*.spec.js
+
+# Utility/development scripts
+scripts/
+debug-*.js
+discover-*.js
+generate-*.js
+verify-*.js
+
+# Generated files
+ADMIN_*.md
+AUDIT_*.md
+*_SUMMARY.md
+*_REPORT.md
+*_GUIDE.md
+*_COMPLETE.md
+*_READY.md
+INDEX.md

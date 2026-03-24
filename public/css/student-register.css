@@ -1,0 +1,17 @@
+/* Extracted styles for student-register page (was inline) */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+.register-container{background:white;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,0.2);max-width:500px;width:100%;padding:40px;animation:slideUp 0.6s ease-out}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.logo{text-align:center;margin-bottom:30px}.logo h1{color:#667eea;font-size:28px;margin-bottom:5px}.logo p{color:#999;font-size:13px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}.form-row.full{grid-template-columns:1fr}
+.form-group{margin-bottom:15px}.form-group label{display:block;margin-bottom:8px;color:#333;font-weight:500;font-size:14px}
+.form-group input,.form-group select{width:100%;padding:12px;border:1px solid #ddd;border-radius:5px;font-size:14px;transition:border-color .3s}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1)}
+.btn-register{width:100%;padding:12px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;border:none;border-radius:5px;font-size:15px;font-weight:600;cursor:pointer;margin-top:20px}
+.btn-register:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(102,126,234,.4)}.btn-register:disabled{opacity:.6;cursor:not-allowed}
+.login-link{text-align:center;margin-top:20px;font-size:14px;color:#666}.login-link a{color:#667eea;text-decoration:none;font-weight:600}
+.error-message{background-color:#f8d7da;color:#721c24;padding:12px;border-radius:5px;margin-bottom:20px;font-size:13px;display:none}
+.error-message.show{display:block}
+.password-requirements{font-size:12px;color:#999;margin-top:5px}
+@media (max-width:480px){.register-container{padding:30px 20px}.form-row{grid-template-columns:1fr}.logo h1{font-size:24px}}

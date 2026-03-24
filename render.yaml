@@ -1,0 +1,56 @@
+services:
+  - type: web
+    name: chukacribs-api
+    env: node
+    plan: free
+    
+    # Build settings
+    buildCommand: npm install
+    startCommand: npm start
+    
+    # Root directory
+    rootDir: ./
+    
+    # Environment variables (set these in Render dashboard)
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: mongodb
+          property: connectionString
+      - key: JWT_SECRET
+        sync: false
+      - key: ADMIN_SECRET_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://chukacribs.co.ke
+      - key: SMS_PROVIDER
+        value: africastalking
+      - key: AFRICASTALKING_USERNAME
+        sync: false
+      - key: AFRICASTALKING_API_KEY
+        sync: false
+      - key: SMS_SENDER_ID
+        value: 20880
+      - key: SMS_ENABLED
+        value: true
+      - key: MPESA_ENVIRONMENT
+        value: production
+      - key: MPESA_CONSUMER_KEY
+        sync: false
+      - key: MPESA_CONSUMER_SECRET
+        sync: false
+      - key: MPESA_BUSINESS_SHORTCODE
+        sync: false
+      - key: MPESA_PASSKEY
+        sync: false
+    
+    # Health check
+    healthCheckPath: /
+    healthCheckInterval: 10
+    
+    # Auto-deploy from git
+    autoDeploy: true

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuka Cribs Payment</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/error-styles.css">
+</head>
+<body class="payment-page">
+    <div class="container">
+        <header>
+            <h1>Chuka Cribs</h1>
+            <p><a href="/" class="back-link">&larr; Back to home</a></p>
+        </header>
+
+        <main>
+            <form class="payment-form" id="paymentPageForm">
+                <h2>Payment Details</h2>
+                
+        
+
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="example@email.com" required>
+
+                <!-- Amount is fixed at 100 KES, no input required -->
+                <input type="hidden" id="amount" value="100">
+
+                <label for="mpesa">Mpesa Number</label>
+                <input type="text" id="mpesa" placeholder="07XXXXXXXX" required>
+
+                <button type="submit">Pay via Mpesa</button>
+            </form>
+        </main>
+    </div>
+    <script src="js/loading.js"></script>
+    <script src="js/error-manager.js"></script>
+    <script src="js/form-validator.js"></script>
+    <script src="js/payment.js"></script>
+</body>
+</html>

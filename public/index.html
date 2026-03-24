@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ChukaCribs">
+    <meta name="theme-color" content="#0B1F3B">
+    <meta name="description" content="ChukaCribs - Find student accommodation in Chuka. Browse vacant houses with pictures and videos. Book your perfect home today!">
+    <meta name="keywords" content="accommodation, student housing, Chuka, houses, rental, student cribs">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <title>ChukaCribs - Student Accommodation in Chuka</title>
+    <!-- use main logo file for site icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/Icon1.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/Icon1.png">
+    <link rel="apple-touch-icon" href="/images/Icon1.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/chuka-landing.css">
+    <link rel="stylesheet" href="css/chuka-test.css">
+    <link rel="stylesheet" href="css/mobile-optimized.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <link rel="stylesheet" href="css/error-styles.css">
+    <link rel="stylesheet" href="css/inline-refactor.css">
+</head>
+<body>
+    <div id="systemStatus" class="system-status" aria-live="polite" aria-atomic="true" role="status"></div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <img src="/images/Icon1.png" alt="ChukaCribs logo" class="logo-img" />
+                <span class="logo-text">ChukaCribs</span>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#listings">Listings</a></li>
+                <li><a href="#about">About</a></li>
+                <li><button class="rate-btn" id="rateBtn">⭐ Rate Us</button></li>
+                <li><a href="http://localhost:3000/landlord-portal/landlord-login.html" class="landlord-link">🏠 Landlord Portal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero" aria-label="Hero: Verified student housing in Chuka">
+        <div class="hero-content">
+            <h1 class="hero-title">Verified Student Housing in Chuka — See Before You Pay.</h1>
+            <p class="hero-subtitle">Browse real photos and videos of student houses near campus. Pay once and get full 24-hour access.</p>
+            <p class="hero-tagline">Start your semester with confidence.</p>
+            <button class="cta-button" id="ctaBtn">Browse Verified Rooms</button>
+
+            <div class="trust-strip" role="list" aria-label="Why you can trust listings">
+                <div class="trust-item" role="listitem">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Direct landlord listings</span>
+                </div>
+                <div class="trust-item" role="listitem">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="3" y="7" width="18" height="12" rx="2" stroke="#FFFFFF" stroke-width="1.6"/><circle cx="12" cy="13" r="2" fill="#FFFFFF"/></svg>
+                    <span>Real photos & videos</span>
+                </div>
+                <div class="trust-item" role="listitem">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 7v5l3 2" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#FFFFFF" stroke-width="1.2"/></svg>
+                    <span>Pay once. Access for 24 hours.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 50 to 100 Listings Section -->
+    <section id="50ton100" class="ton100-section">
+        <div class="ton100-content">
+            <h2>50 to 100 Listings — Pay 100 KSH for Full Access</h2>
+            <p class="text-center text-muted mb-30">Unlock access to all verified houses and rooms in Chuka — see real photos, videos and landlord contacts once you pay.</p>
+            <div class="ton100-grid">
+                <div class="ton100-card">
+                    <h3>50+ Verified Listings</h3>
+                    <p>Hand-picked listings with real verification to save you time and avoid surprises.</p>
+                </div>
+                <div class="ton100-card">
+                    <h3>100% Real Photos & Videos</h3>
+                    <p>Browse actual photos and walkthrough videos from the property, not stock images.</p>
+                </div>
+                <div class="ton100-card">
+                    <h3>Instant Landlord Contact</h3>
+                    <p>Get landlord phone numbers and booking details immediately after payment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section (Conversion Focus) -->
+    <section class="how-it-works">
+        <h2>How It Works</h2>
+        <p class="how-it-works-subtitle">Get verified access in just three simple steps</p>
+        <div class="how-it-works-grid">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Browse Listings</h3>
+                <p class="step-description">Explore verified student houses with real photos and videos near Chuka campus.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Pay Once (100KSH)</h3>
+                <p class="step-description">Unlock full 24-hour access to photos, videos, and landlord contact details.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Book Your Room</h3>
+                <p class="step-description">Contact landlords directly and secure your perfect accommodation with confidence.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- House Listings Section -->
+    <section id="listings" class="listings-section">
+        <h2 class="section-title">Sample Houses (Limited Preview)</h2>
+        <p class="text-center text-muted mb-30">Here are a few examples. <strong>Pay 100 KSH</strong> to access all available listings!</p>
+        <div id="listingsContainer" class="listings-grid">
+            <!-- Mock listings will be loaded here -->
+        </div>
+        <div id="noListings" class="no-listings hidden">
+            <p>No listings found.</p>
+        </div>
+    </section>
+
+    <!-- House Preview Modal (Before Payment) -->
+    <div id="housePreviewModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="previewTitle" aria-describedby="previewDescription">
+        <div class="modal-content" role="document">
+            <span class="close" role="button" aria-label="Close preview modal">&times;</span>
+            <div class="modal-body preview-modal">
+                <div class="preview-header">
+                    <h2 id="previewTitle"></h2>
+                    <p id="previewType" class="house-type"></p>
+                </div>
+                <div class="preview-content">
+                    <div class="preview-info">
+                        <div class="info-section">
+                            <h3>📍 Location</h3>
+                            <p id="previewLocation"></p>
+                        </div>
+                        <div class="info-section">
+                            <h3>💰 Price</h3>
+                            <p id="previewPrice"></p>
+                        </div>
+                        <div class="info-section">
+                            <h3>📋 Description</h3>
+                            <p id="previewDescription"></p>
+                        </div>
+                        <div class="info-section">
+                            <h3>👤 Landlord Contact</h3>
+                            <p id="previewLandlordName" class="font-bold"></p>
+                            <p id="previewLandlordPhone"></p>
+                        </div>
+                        <div class="info-section">
+                            <h3>🔒 Limited Preview</h3>
+                            <p class="text-muted small">To see full photos, videos, and all house details, purchase 24-hour access for 100 KSH.</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="buyAccessForPreviewBtn" type="button" class="book-btn">Buy Access for 100 KSH</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- House Details Modal (After Payment) -->
+    <div id="houseModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+        <div class="modal-content" role="document">
+            <span class="close" role="button" aria-label="Close details modal">&times;</span>
+            <div class="modal-body">
+                <div class="modal-gallery">
+                    <div id="mainImage" class="main-image"></div>
+                    <div id="galleryThumbnails" class="gallery-thumbnails"></div>
+                </div>
+                <div class="modal-info">
+                    <h2 id="modalTitle"></h2>
+                    <p id="modalLocation" class="location"></p>
+                    <p id="modalPrice" class="price"></p>
+                    <p id="modalDescription" class="description"></p>
+                    <div id="modalFeatures" class="features"></div>
+                    <div id="modalVideos" class="videos-section"></div>
+                    <div id="modalLandlordInfo" class="landlord-info"></div>
+                    <button id="bookBtn" type="button" class="book-btn">Book This House</button>
+                    <button id="viewDetailsBtn" type="button" class="view-details-btn">View More Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Purchase Modal -->
+    <div id="tokenModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="paymentForm" aria-describedby="paymentBtn">
+        <div class="modal-content modal-small" role="document">
+            <span class="close" role="button" aria-label="Close payment modal">&times;</span>
+            <div class="modal-body token-modal-body">
+                <!-- Payment Form -->
+                <form id="paymentForm" class="payment-form">
+                    <div>
+                        <label for="phoneNumber" class="label-block">Phone Number *</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="0712345678 or 254712345678" required class="form-input">
+                        <small class="text-muted small">Format: 0712345678 or 254712345678</small>
+                    </div>
+                    <div>
+                        <label for="email" class="label-block">Email Address *</label>
+                        <input type="email" id="email" name="email" placeholder="your.email@example.com" required class="form-input">
+                    </div>
+                </form>
+                
+                <button id="paymentBtn" type="button" class="payment-btn">Proceed to Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Confirmation Modal -->
+    <div id="bookingModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="bookingDetails" aria-describedby="confirmBookingBtn">
+        <div class="modal-content modal-small" role="document">
+            <span class="close" role="button" aria-label="Close booking modal">&times;</span>
+            <div class="modal-body booking-modal-body">
+                <h2>Confirm Your Booking</h2>
+                <div id="bookingDetails"></div>
+                <p class="booking-warning">⚠️ Your access token will expire after booking.</p>
+                <button id="confirmBookingBtn" type="button" class="confirm-btn">Confirm Booking</button>
+                <button id="cancelBookingBtn" type="button" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rate Us Modal -->
+    <div id="rateModal" class="modal hidden">
+        <div class="modal-content modal-small">
+            <span class="close">&times;</span>
+            <div class="modal-body rate-modal-body">
+                <h2>⭐ Rate ChukaCribs</h2>
+                <p class="rate-subtitle">Help us improve by sharing your experience</p>
+                
+                <div class="rating-stars" role="radiogroup" aria-label="Rate ChukaCribs">
+                    <button type="button" class="star" data-rating="1" aria-label="Rate 1 star">⭐</button>
+                    <button type="button" class="star" data-rating="2" aria-label="Rate 2 stars">⭐</button>
+                    <button type="button" class="star" data-rating="3" aria-label="Rate 3 stars">⭐</button>
+                    <button type="button" class="star" data-rating="4" aria-label="Rate 4 stars">⭐</button>
+                    <button type="button" class="star" data-rating="5" aria-label="Rate 5 stars">⭐</button>
+                </div>
+                
+                <div class="rating-text">
+                    <span id="ratingText">Click to rate</span>
+                </div>
+                
+                <textarea id="ratingComment" placeholder="Tell us what you think (optional)" class="rating-comment" rows="3"></textarea>
+                
+                <div class="rate-actions">
+                    <button id="submitRatingBtn" class="submit-rating-btn" disabled>Submit Rating</button>
+                    <button id="cancelRatingBtn" class="cancel-rating-btn">Maybe Later</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="about-content">
+            <h2>About ChukaCribs</h2>
+            <p>ChukaCribs is dedicated to helping students find comfortable, affordable accommodation in Chuka. Our platform connects students with verified landlords offering quality housing options.</p>
+            <div class="about-features">
+                <div class="feature">
+                    <span class="feature-icon">🔒</span>
+                    <h3>Secure</h3>
+                    <p>Safe and verified listings</p>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">⚡</span>
+                    <h3>Fast</h3>
+                    <p>Quick booking process</p>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">💰</span>
+                    <h3>Affordable</h3>
+                    <p>Best prices in Chuka</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials / Site Feedback -->
+    <section id="testimonials" class="testimonials-section">
+        <h2>What people say</h2>
+        <div id="testimonialsContainer" class="testimonials-grid">
+            <!-- Approved site feedback will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+                <p>&copy; 2026 ChukaCribs. All rights reserved. | <a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a> | <a href="/admin-panel.html" class="text-muted small">🔐 Admin</a></p>
+    </footer>
+
+    <script src="js/loading.js"></script>
+    <script src="js/error-manager.js"></script>
+    <script src="js/form-validator.js"></script>
+    <script src="js/image-compressor.js"></script>
+    <script src="js/testimonials.js"></script>
+    <script src="js/video-handler.js"></script>
+    <script src="js/pwa-manager.js"></script>
+    <script src="js/app-landing.js"></script>
+</body>
+</html>

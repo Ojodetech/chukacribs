@@ -1,0 +1,46 @@
+# Code Owners and Responsibility Assignment
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Documentation
+*.md @devops-team
+
+# GitHub related
+.github/ @devops-team
+.github/workflows/ @devops-team
+
+# Docker & Deployment
+Dockerfile @devops-team
+docker-compose.yml @devops-team
+.dockerignore @devops-team
+kubernetes/ @devops-team
+
+# Core Configuration
+index.js @backend-lead
+package.json @devops-team
+.env* @devops-team
+
+# Authentication & Security
+config/auth.js @security-team
+config/security.js @security-team
+config/validation.js @backend-lead
+config/structured-logger.js @backend-lead
+
+# Database
+models/ @database-team
+config/database.js @database-team
+
+# API Routes
+routes/auth.js @backend-lead
+routes/payments.js @payments-team
+routes/bookings.js @backend-lead
+routes/ @backend-lead
+
+# Tests
+__tests__/ @qa-team
+
+# Version Control
+.gitignore @devops-team
+.git/ @devops-team
+
+# Default (everyone)
+* @backend-lead

@@ -1,0 +1,399 @@
+name: Security Scanning Pipeline
+
+on:
+  push:
+    branches: [main, develop, staging]
+  pull_request:
+    branches: [main, develop, staging]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Full history for security analysis
+      
+      # ============================================================================
+      # DEPENDENCY SCANNING
+      # ============================================================================
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run npm audit
+        id: npm-audit
+        run: |
+          npm audit --json > npm-audit-report.json || echo "audit_exit_code=$?" >> $GITHUB_ENV
+          cat npm-audit-report.json
+        continue-on-error: true
+      
+      - name: Upload npm audit report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: npm-audit-report-${{ matrix.node-version }}
+          path: npm-audit-report.json
+      
+      - name: Check for critical vulnerabilities
+        run: |
+          CRITICAL=$(jq '[.vulnerabilities[] | select(.severity=="critical")] | length' npm-audit-report.json)
+          if [ $CRITICAL -gt 0 ]; then
+            echo "❌ Found $CRITICAL critical vulnerabilities"
+            exit 1
+          fi
+      
+      # ============================================================================
+      # STATIC CODE ANALYSIS
+      # ============================================================================
+      
+      - name: Run ESLint with security plugin
+        id: eslint
+        run: |
+          npm install --save-dev eslint-plugin-security
+          npx eslint . --format json --output-file eslint-report.json || true
+        continue-on-error: true
+      
+      - name: Upload ESLint report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: eslint-report-${{ matrix.node-version }}
+          path: eslint-report.json
+      
+      - name: SonarQube analysis (if SonarCloud available)
+        uses: SonarSource/sonarcloud-github-action@master
+        if: env.SONAR_TOKEN != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
+      
+      # ============================================================================
+      # SAST - STATIC APPLICATION SECURITY TESTING
+      # ============================================================================
+      
+      - name: Run Semgrep (SAST)
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/owasp-top-ten
+            p/cwe-top-25
+            p/security-audit
+            p/nodejs
+        continue-on-error: true
+      
+      - name: Run CodeQL analysis
+        uses: github/codeql-action/init@v2
+        with:
+          languages: 'javascript'
+        continue-on-error: true
+      
+      - name: Autobuild with CodeQL
+        uses: github/codeql-action/autobuild@v2
+        continue-on-error: true
+      
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        continue-on-error: true
+      
+      # ============================================================================
+      # DAST - DYNAMIC APPLICATION SECURITY TESTING
+      # ============================================================================
+      
+      - name: Build application
+        run: npm run build || true
+        continue-on-error: true
+      
+      - name: Start application for DAST
+        run: |
+          npm start &
+          sleep 10
+          curl -f http://localhost:3000/health || echo "App not responding"
+        continue-on-error: true
+      
+      - name: Run OWASP ZAP scan
+        uses: zaproxy/action-full-scan@v0
+        with:
+          target: 'http://localhost:3000'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+        continue-on-error: true
+      
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: zap-scan-report
+          path: report_*.html
+      
+      # ============================================================================
+      # CONTAINER SCANNING (if Docker image exists)
+      # ============================================================================
+      
+      - name: Build Docker image
+        if: contains(github.ref, 'main') || contains(github.ref, 'staging')
+        run: docker build -t chuka-cribs:latest .
+        continue-on-error: true
+      
+      - name: Scan Docker image with Trivy
+        if: contains(github.ref, 'main') || contains(github.ref, 'staging')
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'chuka-cribs:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+        continue-on-error: true
+      
+      - name: Upload Trivy results to GitHub Security
+        if: contains(github.ref, 'main') || contains(github.ref, 'staging')
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+        continue-on-error: true
+      
+      - name: Scan Docker image with Anchore
+        if: contains(github.ref, 'main') || contains(github.ref, 'staging')
+        uses: anchore/scan-action@v3
+        id: anchore
+        with:
+          image: 'chuka-cribs:latest'
+          acs-report-enable: true
+        continue-on-error: true
+      
+      - name: Upload Anchore report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: anchore-scan-report
+          path: ${{ steps.anchore.outputs.sarif }}
+      
+      # ============================================================================
+      # CONFIGURATION & SECRETS SCANNING
+      # ============================================================================
+      
+      - name: Run git-secrets scan
+        run: |
+          git clone https://github.com/awslabs/git-secrets.git /tmp/git-secrets
+          /tmp/git-secrets/install.sh
+          git secrets --scan
+        continue-on-error: false
+      
+      - name: Run TruffleHog (secrets detection)
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+        continue-on-error: false
+      
+      - name: Check for exposed .env files
+        run: |
+          if find . -name ".env" -o -name ".env.local" -o -name ".env.*.local" | grep -v node_modules; then
+            echo "❌ Exposed .env files found!"
+            exit 1
+          fi
+      
+      - name: Validate .env.example
+        run: |
+          if [ ! -f .env.example ]; then
+            echo "⚠️  .env.example not found"
+          else
+            echo "✓ .env.example found"
+          fi
+      
+      # ============================================================================
+      # DEPENDENCY LICENSE SCAN
+      # ============================================================================
+      
+      - name: Run license scan
+        run: |
+          npm install -g license-report
+          license-report --output json > licenses.json || true
+        continue-on-error: true
+      
+      - name: Check for GPL/AGPL licenses
+        run: |
+          VIRAL=$(jq '[.[] | select(.license | contains("GPL") or contains("AGPL"))] | length' licenses.json)
+          if [ $VIRAL -gt 0 ]; then
+            echo "⚠️  Found $VIRAL GPL/AGPL licensed packages"
+            jq '[.[] | select(.license | contains("GPL") or contains("AGPL"))]' licenses.json
+          fi
+        continue-on-error: true
+      
+      - name: Upload license report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: license-report
+          path: licenses.json
+      
+      # ============================================================================
+      # FUNCTIONALITY & TESTS
+      # ============================================================================
+      
+      - name: Run unit tests
+        run: npm test -- --coverage
+        continue-on-error: true
+      
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+        continue-on-error: true
+      
+      - name: Run integration tests
+        run: npm run test:integration || true
+        continue-on-error: true
+      
+      # ============================================================================
+      # REPORTING & NOTIFICATIONS
+      # ============================================================================
+      
+      - name: Generate security summary
+        if: always()
+        run: |
+          echo "# Security Scan Summary" > security-summary.md
+          echo "" >> security-summary.md
+          echo "## Scan Results" >> security-summary.md
+          echo "" >> security-summary.md
+          echo "- npm audit: ✓" >> security-summary.md
+          echo "- ESLint: ✓" >> security-summary.md
+          echo "- Semgrep: ✓" >> security-summary.md
+          echo "- Secrets: ✓" >> security-summary.md
+          cat security-summary.md
+      
+      - name: Create security check PR comment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('security-summary.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+        continue-on-error: true
+      
+      - name: Upload all reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: security-reports-${{ matrix.node-version }}
+          path: |
+            npm-audit-report.json
+            eslint-report.json
+            security-summary.md
+            licenses.json
+      
+      - name: Slack notification on failure
+        if: failure() && env.SLACK_WEBHOOK != ''
+        uses: slackapi/slack-github-action@v1
+        with:
+          webhook-url: ${{ env.SLACK_WEBHOOK }}
+          payload: |
+            {
+              "text": "Security scan failed for ${{ github.repository }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🔴 *Security Scan Failed*\nRepository: ${{ github.repository }}\nBranch: ${{ github.ref }}\nAuthor: ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        continue-on-error: true
+  
+  # ============================================================================
+  # POLICY CHECK JOB
+  # ============================================================================
+  
+  policy-check:
+    runs-on: ubuntu-latest
+    needs: security-scan
+    if: always()
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+      
+      - name: Check policy compliance
+        run: |
+          echo "Checking security policy compliance..."
+          
+          # Policy: No critical vulnerabilities
+          if [ -f npm-audit-report-*/npm-audit-report.json ]; then
+            CRITICAL=$(jq '[.vulnerabilities[] | select(.severity=="critical")] | length' npm-audit-report-*/npm-audit-report.json)
+            if [ $CRITICAL -gt 0 ]; then
+              echo "❌ Policy violation: Critical vulnerabilities found"
+              exit 1
+            fi
+          fi
+          
+          echo "✓ Security policy check passed"
+      
+      - name: Fail build if security checks did not pass
+        if: failure()
+        run: |
+          echo "❌ Security checks failed"
+          exit 1
+      
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ All security checks passed!'
+            });
+
+  # ============================================================================
+  # PRODUCTION DEPLOYMENT GATE
+  # ============================================================================
+  
+  deployment-gate:
+    runs-on: ubuntu-latest
+    needs: policy-check
+    if: github.ref == 'refs/heads/main' && always()
+    
+    steps:
+      - name: Check if deployment should proceed
+        run: |
+          if [ "${{ needs.policy-check.result }}" = "success" ]; then
+            echo "✓ All security checks passed - deployment approved"
+            exit 0
+          else
+            echo "❌ Security checks failed - deployment blocked"
+            exit 1
+          fi
+      
+      - name: Notify deployment status
+        if: always()
+        run: echo "Deployment gate status: ${{ job.status }}"

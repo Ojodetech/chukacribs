@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Register as a Landlord on ChukaCribs - Your student accommodation platform">
+    <meta name="theme-color" content="#2563eb">
+    <title>Landlord Registration - ChukaCribs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/landlord-portal/css/landlord-register.css">
+    <link rel="stylesheet" href="/css/loading.css">
+    <link rel="stylesheet" href="/css/error-styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="/" class="back-link">← Back to Home</a>
+    </nav>
+
+    <!-- Main Register Container -->
+    <div class="register-wrapper">
+        <!-- Left Side - Benefits Section -->
+        <div class="register-info">
+            <div class="info-content">
+                <h2>Start Earning Today</h2>
+                <p>Join thousands of landlords monetizing their student accommodations with ChukaCribs</p>
+                
+                <ul class="benefits-list">
+                    <li>
+                        <div class="benefits-icon">📊</div>
+                        <div class="benefits-text">
+                            <h3>Easy Management</h3>
+                            <p>Manage all your properties from one dashboard</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="benefits-icon">💰</div>
+                        <div class="benefits-text">
+                            <h3>Quick Payments</h3>
+                            <p>Get paid fast and securely through our platform</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="benefits-icon">👥</div>
+                        <div class="benefits-text">
+                            <h3>Verified Tenants</h3>
+                            <p>Connect with verified students in your area</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="benefits-icon">🔒</div>
+                        <div class="benefits-text">
+                            <h3>Secure Platform</h3>
+                            <p>Your data is protected with bank-level security</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Side - Registration Form -->
+        <div class="auth-container">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <span class="logo-icon">🏠</span>
+                <div class="logo-text">ChukaCribs</div>
+            </div>
+
+            <h1>Create Your Account</h1>
+            <p class="subtitle">Register as a landlord and start managing your properties</p>
+
+            <!-- Success Message -->
+            <div class="message success" id="successMessage">
+                ✓ Registration successful! Redirecting to login...
+            </div>
+
+            <!-- Error Message -->
+            <div class="message error" id="generalError"></div>
+
+            <!-- Registration Form -->
+            <form id="registerForm">
+                <!-- First and Last Name Row -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input 
+                            type="text" 
+                            id="firstName" 
+                            name="firstName"
+                            placeholder="John"
+                            required
+                            aria-label="First name"
+                        >
+                        <div class="form-error" id="firstNameError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input 
+                            type="text" 
+                            id="lastName" 
+                            name="lastName"
+                            placeholder="Doe"
+                            required
+                            aria-label="Last name"
+                        >
+                        <div class="form-error" id="lastNameError"></div>
+                    </div>
+                </div>
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email"
+                        placeholder="your@email.com"
+                        required
+                        aria-label="Email address"
+                    >
+                    <div class="form-error" id="emailError"></div>
+                </div>
+
+                <!-- Phone Field -->
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        name="phone"
+                        placeholder="+254712345678"
+                        required
+                        aria-label="Phone number"
+                    >
+                    <div class="form-error" id="phoneError"></div>
+                </div>
+
+                <!-- National ID Field -->
+                <div class="form-group">
+                    <label for="nationalId">National ID</label>
+                    <input 
+                        type="text" 
+                        id="nationalId" 
+                        name="nationalId"
+                        placeholder="Your National ID Number"
+                        required
+                        aria-label="National ID"
+                    >
+                    <div class="form-error" id="nationalIdError"></div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <div class="password-input-wrapper">
+                        <label for="password">Password</label>
+                        <button 
+                            type="button" 
+                            class="password-toggle password-hidden" 
+                            data-action="toggle-password" 
+                            data-target="password"
+                            aria-label="Show password"
+                        >
+                            <span class="password-icon">👁️</span>
+                        </button>
+                    </div>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password"
+                        placeholder="Create a strong password"
+                        required
+                        aria-label="Password"
+                    >
+                    <div class="password-requirements" id="passwordRequirements">
+                        <div class="requirement" id="req-length">
+                            <span class="requirement-icon">○</span>
+                            <span>At least 8 characters</span>
+                        </div>
+                        <div class="requirement" id="req-upper">
+                            <span class="requirement-icon">○</span>
+                            <span>One uppercase letter</span>
+                        </div>
+                        <div class="requirement" id="req-lower">
+                            <span class="requirement-icon">○</span>
+                            <span>One lowercase letter</span>
+                        </div>
+                        <div class="requirement" id="req-number">
+                            <span class="requirement-icon">○</span>
+                            <span>One number</span>
+                        </div>
+                    </div>
+                    <div class="form-error" id="passwordError"></div>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="form-group">
+                    <div class="password-input-wrapper">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <button 
+                            type="button" 
+                            class="password-toggle password-hidden" 
+                            data-action="toggle-password" 
+                            data-target="confirmPassword"
+                            aria-label="Show password"
+                        >
+                            <span class="password-icon">👁️</span>
+                        </button>
+                    </div>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword"
+                        placeholder="Confirm your password"
+                        required
+                        aria-label="Confirm password"
+                    >
+                    <div class="form-error" id="confirmPasswordError"></div>
+                </div>
+
+                <!-- Terms and Conditions Checkbox -->
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input 
+                            type="checkbox" 
+                            id="termsAccepted" 
+                            name="termsAccepted"
+                            required
+                            aria-label="Agree to terms and conditions"
+                        >
+                        <span class="checkbox-text">I agree to the <a href="/privacy-policy.html" target="_blank">Privacy Policy</a> and <a href="/terms-of-service.html" target="_blank">Terms of Service</a></span>
+                    </label>
+                    <div class="form-error" id="termsAcceptedError"></div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">
+                    Create Account
+                </button>
+
+                <!-- Loading Spinner -->
+                <div class="loading" id="loading">
+                    <div class="loading-content">
+                        <div class="spinner"></div>
+                        <p>Creating account...</p>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Sign In Link -->
+            <div class="auth-footer">
+                <a href="/landlord-portal/landlord-login.html" class="btn btn-secondary">
+                    Sign In
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/loading.js"></script>
+    <script src="/js/error-manager.js"></script>
+    <script src="/js/form-validator.js"></script>
+    <script src="/landlord-portal/js/password-toggle.js"></script>
+    <script src="/landlord-portal/js/landlord-register.js"></script>
+</body>
+</html>

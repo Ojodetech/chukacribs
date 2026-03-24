@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ChukaCribs">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="Privacy Policy for ChukaCribs - Student accommodation platform. Learn how we protect your personal information.">
+    <meta name="keywords" content="privacy, policy, ChukaCribs, data protection, student accommodation">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="email=no">
+    <meta property="og:title" content="Privacy Policy - ChukaCribs">
+    <meta property="og:description" content="Learn how ChukaCribs protects your personal information.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.chukacribs.co.ke/privacy-policy">
+    <title>Privacy Policy - ChukaCribs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/mobile-optimized.css">
+    <link rel="stylesheet" href="/css/error-styles.css">
+    <style>
+        .policy-page {
+            min-height: 100vh;
+            background-color: var(--bg-light);
+        }
+
+        .policy-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .policy-header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .policy-title {
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .policy-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .policy-content {
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+
+        .policy-content h2 {
+            font-size: clamp(1.5rem, 3vw, 1.8rem);
+            color: var(--primary-color);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .policy-content h2:first-of-type {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 1rem;
+        }
+
+        .policy-content h3 {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            color: var(--text-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .policy-content p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        .policy-content ul,
+        .policy-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        .policy-content li {
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+
+        .policy-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .policy-content table th,
+        .policy-content table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .policy-content table th {
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            font-weight: 600;
+        }
+
+        .policy-content table tr:hover {
+            background-color: var(--bg-light);
+        }
+
+        .policy-content a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border-bottom: 1px solid transparent;
+        }
+
+        .policy-content a:hover {
+            border-bottom-color: var(--primary-color);
+        }
+
+        .highlight-box {
+            background-color: #f0f4ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .highlight-box strong {
+            color: var(--primary-color);
+        }
+
+        .rights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .rights-item {
+            background-color: var(--bg-white);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+            box-shadow: var(--shadow);
+        }
+
+        .rights-item strong {
+            color: var(--primary-color);
+        }
+
+        .version-history {
+            background-color: var(--bg-white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background-color: var(--primary-color);
+            color: var(--bg-white);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .policy-container {
+                padding: 2rem 1rem;
+            }
+
+            .policy-content h2 {
+                margin-top: 2rem;
+            }
+
+            .policy-content ul,
+            .policy-content ol {
+                margin-left: 1.5rem;
+            }
+
+            .rights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .scroll-to-top {
+                bottom: 1rem;
+                right: 1rem;
+                width: 44px;
+                height: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">🏠 ChukaCribs</div>
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#listings">Listings</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/landlord-portal/landlord-login.html" class="landlord-link">🏠 Landlord Portal</a></li>
+                <li><a href="/payment.html" class="access-btn">Get Access Token</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Privacy Policy Content -->
+    <div class="policy-page">
+        <div class="policy-container">
+            <!-- Header -->
+            <div class="policy-header">
+                <h1 class="policy-title">Privacy Policy</h1>
+                <div class="policy-meta">
+                    <span><strong>Effective Date:</strong> January 31, 2026</span>
+                    <span><strong>Last Updated:</strong> January 31, 2026</span>
+                    <span><strong>Version:</strong> 1.0</span>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="policy-content">
+                <h2>Introduction</h2>
+                <p>ChukaCribs ("we," "us," "our," or "Company") values your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you use our website https://www.chukacribs.co.ke and related services.</p>
+
+                <div class="highlight-box">
+                    <p><strong>This policy complies with:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Kenya's Data Protection Act, 2019</li>
+                        <li>General Data Protection Regulation (GDPR) – where applicable</li>
+                        <li>California Consumer Privacy Act (CCPA) – where applicable</li>
+                        <li>Office of the Data Protection Commissioner (ODPC) guidelines</li>
+                    </ul>
+                </div>
+
+                <h2>1. Information We Collect</h2>
+
+                <h3>Personal Information</h3>
+                <ul>
+                    <li>Name, email address, phone number</li>
+                    <li>University/student details (institution, ID, year of study)</li>
+                    <li>Residential address and housing preferences</li>
+                    <li>Payment information (processed securely via third-party providers)</li>
+                    <li>Government ID (for verification purposes)</li>
+                </ul>
+
+                <h3>Technical Information</h3>
+                <ul>
+                    <li>IP address and browser type</li>
+                    <li>Operating system and device information</li>
+                    <li>Pages visited and time spent on site</li>
+                    <li>Referral source</li>
+                </ul>
+
+                <h3>Usage Information</h3>
+                <ul>
+                    <li>Forms submitted (registration, booking, inquiries)</li>
+                    <li>Booking and reservation details</li>
+                    <li>Search queries and filters applied</li>
+                    <li>Messages and support tickets</li>
+                </ul>
+
+                <h3>Cookies and Tracking</h3>
+                <p>We use cookies and similar technologies (pixels, web beacons) to:</p>
+                <ul>
+                    <li>Maintain session information</li>
+                    <li>Improve website functionality</li>
+                    <li>Analyze traffic and user behavior</li>
+                    <li>Personalize user experience</li>
+                </ul>
+
+                <h2>2. Legal Basis for Processing</h2>
+                <p>We process your information based on one or more of the following legal grounds:</p>
+                <table>
+                    <tr>
+                        <th>Basis</th>
+                        <th>Application</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Your Consent</strong></td>
+                        <td>Marketing communications, optional cookies, user preferences</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contract Performance</strong></td>
+                        <td>Booking management, payment processing, service delivery</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legal Obligation</strong></td>
+                        <td>Compliance with tax laws, fraud prevention, court orders</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legitimate Interest</strong></td>
+                        <td>Website security, fraud detection, analytics, service improvement</td>
+                    </tr>
+                </table>
+
+                <h2>3. How We Use Your Information</h2>
+                <ul>
+                    <li>Providing, maintaining, and improving our services (booking management, student housing platform)</li>
+                    <li>Sending transactional emails (confirmations, receipts, notifications, verification links)</li>
+                    <li>Responding to inquiries or support requests</li>
+                    <li>Sending marketing communications (only if you have opted in)</li>
+                    <li>Fraud prevention, security monitoring, and legal compliance</li>
+                    <li>Generating analytics and usage reports to optimize our services</li>
+                    <li>Verifying user identity and preventing unauthorized access</li>
+                </ul>
+
+                <h2>4. Information Sharing</h2>
+
+                <h3>We Do Not Sell or Trade Your Data</h3>
+                <p>We may share information with:</p>
+
+                <h3>Service Providers & Data Processors</h3>
+                <p>All third parties have signed Data Processing Agreements (DPA):</p>
+                <ul>
+                    <li><strong>Sender.net</strong> – Email delivery and transactional communications</li>
+                    <li><strong>[Payment Provider Name]</strong> – Payment processing (PCI DSS Level 1 certified)</li>
+                    <li><strong>[Hosting Provider]</strong> – Server hosting and infrastructure</li>
+                    <li><strong>Google Analytics</strong> – Website traffic analysis (anonymized data)</li>
+                </ul>
+
+                <h3>Legal & Business Scenarios</h3>
+                <ul>
+                    <li><strong>Legal Authorities</strong> – If required by law, court order, or to protect our rights</li>
+                    <li><strong>Business Transfers</strong> – In the event of merger, acquisition, bankruptcy, or asset sale</li>
+                    <li><strong>ODPC & Regulators</strong> – When required by data protection authorities</li>
+                </ul>
+
+                <h2>5. Your Privacy Rights</h2>
+                <p>Under Kenya's Data Protection Act, 2019, and applicable international regulations, you have the right to:</p>
+
+                <div class="rights-grid">
+                    <div class="rights-item">✓ <strong>Access</strong> – Obtain a copy of your data</div>
+                    <div class="rights-item">✓ <strong>Correction</strong> – Fix inaccurate information</div>
+                    <div class="rights-item">✓ <strong>Deletion</strong> – Request data deletion</div>
+                    <div class="rights-item">✓ <strong>Portability</strong> – Export your data</div>
+                    <div class="rights-item">✓ <strong>Objection</strong> – Object to processing</div>
+                    <div class="rights-item">✓ <strong>Restrict Processing</strong> – Limit data usage</div>
+                    <div class="rights-item">✓ <strong>Withdraw Consent</strong> – Stop marketing anytime</div>
+                    <div class="rights-item">✓ <strong>Human Review</strong> – Request review of automated decisions</div>
+                </div>
+
+                <h3>How to Exercise Your Rights</h3>
+                <p>To exercise any of these rights:</p>
+                <ul>
+                    <li><strong>Email:</strong> privacy@chukacribs.co.ke</li>
+                    <li><strong>Physical Address:</strong> ChukaCribs, Chuka, Kenya</li>
+                    <li><strong>Response Time:</strong> We will respond within 30 days</li>
+                </ul>
+
+                <h2>6. Data Retention</h2>
+                <p>We retain personal information only as long as necessary to provide services or comply with legal obligations:</p>
+
+                <table>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Retention Period</th>
+                        <th>Reason</th>
+                    </tr>
+                    <tr>
+                        <td>Account Profile</td>
+                        <td>3 years after last login</td>
+                        <td>Service provision & dispute resolution</td>
+                    </tr>
+                    <tr>
+                        <td>Booking Records</td>
+                        <td>7 years</td>
+                        <td>Tax compliance, legal disputes</td>
+                    </tr>
+                    <tr>
+                        <td>Payment History</td>
+                        <td>7 years</td>
+                        <td>Tax/accounting requirements</td>
+                    </tr>
+                    <tr>
+                        <td>Marketing Preferences</td>
+                        <td>12 months after opt-out</td>
+                        <td>GDPR/CCPA compliance</td>
+                    </tr>
+                    <tr>
+                        <td>Transaction Logs</td>
+                        <td>2 years</td>
+                        <td>Fraud investigation, security</td>
+                    </tr>
+                    <tr>
+                        <td>Support Tickets</td>
+                        <td>3 years</td>
+                        <td>Service improvement, disputes</td>
+                    </tr>
+                    <tr>
+                        <td>Technical Logs (IP, device)</td>
+                        <td>90 days</td>
+                        <td>Security monitoring, abuse prevention</td>
+                    </tr>
+                </table>
+
+                <h2>7. Data Security</h2>
+
+                <h3>Technical Security</h3>
+                <ul>
+                    <li><strong>Encryption in Transit:</strong> TLS 1.2+ for all data transmission</li>
+                    <li><strong>Encryption at Rest:</strong> AES-256 encryption for sensitive data</li>
+                    <li><strong>Authentication:</strong> Secure password hashing (bcrypt/Argon2)</li>
+                    <li><strong>API Security:</strong> Rate limiting, CORS protection, SQL injection prevention</li>
+                    <li><strong>Access Controls:</strong> Role-based access control (RBAC)</li>
+                </ul>
+
+                <h3>Organizational Security</h3>
+                <ul>
+                    <li><strong>Staff Training:</strong> Regular data protection and security awareness training</li>
+                    <li><strong>Background Checks:</strong> Screening of staff with data access</li>
+                    <li><strong>Incident Response Plan:</strong> 72-hour breach notification protocol</li>
+                    <li><strong>Regular Audits:</strong> Security assessments and penetration testing</li>
+                    <li><strong>Vendor Management:</strong> Verification of third-party security compliance</li>
+                </ul>
+
+                <h3>Payment Data</h3>
+                <ul>
+                    <li><strong>PCI DSS Compliance:</strong> Payment information processed by PCI DSS Level 1 certified providers</li>
+                    <li><strong>No Card Storage:</strong> We do not store full credit/debit card details on our servers</li>
+                    <li><strong>Tokenization:</strong> Cards are tokenized for secure recurring payments</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p><strong>⚠️ Note:</strong> While we employ industry-standard security measures, no method of transmission over the internet is 100% secure. We cannot guarantee absolute security.</p>
+                </div>
+
+                <h2>8. Third-Party Links & Services</h2>
+                <p>Our website may contain links to third-party websites and services. We are <strong>not responsible</strong> for:</p>
+                <ul>
+                    <li>Privacy practices of third-party sites</li>
+                    <li>Content, accuracy, or security of external links</li>
+                    <li>Data collection by third-party services</li>
+                </ul>
+                <p>Please review the privacy policies of external websites before providing information.</p>
+
+                <h2>9. Cookies & Tracking Technologies</h2>
+
+                <h3>Types of Cookies We Use</h3>
+                <table>
+                    <tr>
+                        <th>Cookie Type</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                        <th>Disable?</th>
+                    </tr>
+                    <tr>
+                        <td>Session Cookies</td>
+                        <td>Authentication & session management</td>
+                        <td>Session</td>
+                        <td>No (essential)</td>
+                    </tr>
+                    <tr>
+                        <td>Preference Cookies</td>
+                        <td>Remember user preferences</td>
+                        <td>1 year</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Analytics Cookies</td>
+                        <td>Google Analytics tracking</td>
+                        <td>2 years</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Marketing Cookies</td>
+                        <td>Retargeting & personalized ads</td>
+                        <td>90 days</td>
+                        <td>Yes</td>
+                    </tr>
+                </table>
+
+                <h3>Managing Cookies</h3>
+                <ul>
+                    <li><strong>Browser Settings:</strong> Disable cookies in your browser settings (some features may not work)</li>
+                    <li><strong>Do Not Track (DNT):</strong> We honor browser DNT signals for non-essential tracking</li>
+                </ul>
+
+                <h2>10. Children's Privacy</h2>
+                <p>ChukaCribs is designed for university students and adults (18 years and older). We do not knowingly collect personal information from individuals under 18.</p>
+                <ul>
+                    <li>If you are under 18, parental or guardian consent is required</li>
+                    <li>If we discover data from a minor, we will promptly delete it</li>
+                    <li>Contact us at privacy@chukacribs.co.ke if you have concerns</li>
+                </ul>
+
+                <h2>11. Data Breach Notification</h2>
+                <p>In the event of a data breach affecting your personal information:</p>
+                <ol>
+                    <li>We will investigate the breach within 24 hours</li>
+                    <li>We will notify affected users <strong>within 72 hours</strong> via email, site notification, or SMS</li>
+                    <li>We will report to ODPC if required by law</li>
+                    <li>We will provide details of the breach and recommended actions</li>
+                </ol>
+
+                <h2>12. Contact & Privacy Requests</h2>
+
+                <h3>Privacy Officer</h3>
+                <ul>
+                    <li><strong>Email:</strong> privacy@chukacribs.co.ke</li>
+                    <li><strong>Mailing Address:</strong> ChukaCribs, Chuka, Kenya</li>
+                    <li><strong>Response Time:</strong> 30 days maximum</li>
+                </ul>
+
+                <h3>Data Protection Complaints</h3>
+                <p>If you believe your rights have been violated, you can lodge a complaint with:</p>
+                <div class="highlight-box">
+                    <p><strong>Office of the Data Protection Commissioner (ODPC)</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li><strong>Telephone:</strong> +254 703 055 000</li>
+                        <li><strong>Email:</strong> complaints@odpc.or.ke</li>
+                        <li><strong>Website:</strong> www.odpc.or.ke</li>
+                        <li><strong>Location:</strong> Nairobi, Kenya</li>
+                    </ul>
+                </div>
+
+                <h2>13. Updates to This Policy</h2>
+                <p>We may update this Privacy Policy periodically to reflect changes in our practices, new regulations, or technical advancements. The "Effective Date" and "Last Updated" date will indicate the most current version.</p>
+
+                <div class="version-history">
+                    <h3 style="margin-top: 0; color: var(--text-dark);">Version History</h3>
+                    <table>
+                        <tr>
+                            <th>Version</th>
+                            <th>Date</th>
+                            <th>Changes</th>
+                        </tr>
+                        <tr>
+                            <td>1.0</td>
+                            <td>January 31, 2026</td>
+                            <td>Initial Privacy Policy release</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p><strong>Continued use of our services after updates constitutes acceptance of the revised policy.</strong></p>
+
+                <h2>14. Summary of Your Privacy Rights</h2>
+                <div class="rights-grid">
+                    <div class="rights-item">✓ Access – Request a copy of your data</div>
+                    <div class="rights-item">✓ Correct – Fix inaccurate information</div>
+                    <div class="rights-item">✓ Delete – Request deletion of your data</div>
+                    <div class="rights-item">✓ Export – Get your data in portable format</div>
+                    <div class="rights-item">✓ Withdraw Consent – Stop marketing anytime</div>
+                    <div class="rights-item">✓ Lodge Complaints – Contact ODPC</div>
+                    <div class="rights-item">✓ Opt-Out – Disable non-essential cookies</div>
+                    <div class="rights-item">✓ Human Review – Request review of decisions</div>
+                </div>
+
+                <h2>15. Questions?</h2>
+                <p>If you have any questions, concerns, or requests regarding this Privacy Policy, please contact us at <strong>privacy@chukacribs.co.ke</strong>.</p>
+
+                <div class="highlight-box">
+                    <p>💝 <strong>ChukaCribs is committed to your privacy. Thank you for trusting us with your information.</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop">↑</button>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 ChukaCribs. All rights reserved. | <a href="/privacy-policy">Privacy Policy</a> | <a href="/terms-of-service">Terms of Service</a> | <a href="/admin-panel.html" class="text-muted small">🔐 Admin</a></p>
+    </footer>
+
+    <script src="/js/privacy-policy.js"></script>
+</body>
+</html>

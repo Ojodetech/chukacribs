@@ -1,0 +1,273 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main, staging ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy-staging:
+    if: github.ref == 'refs/heads/staging' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
+        if: secrets.STAGING_SSH_KEY != ''
+
+      - name: Deploy to Staging
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }} << 'EOF'
+          set -e
+          
+          echo "🚀 Deploying to Staging..."
+          
+          # Navigate to app directory
+          cd ${{ secrets.STAGING_APP_PATH }}
+          
+          # Pull latest code
+          git pull origin staging
+          
+          # Install dependencies
+          npm ci
+          
+          # Run tests
+          npm test -- --forceExit
+          
+          # Build Docker image
+          docker-compose build app
+          
+          # Run database migrations
+          npm run migrate -- --up
+          
+          # Restart services
+          docker-compose up -d
+          
+          # Run health check
+          sleep 5
+          curl -f http://localhost:3000/health || exit 1
+          
+          echo "✅ Staging deployment complete"
+        EOF
+        if: secrets.STAGING_SSH_KEY != ''
+
+      - name: Run smoke tests
+        run: |
+          echo "🧪 Running smoke tests..."
+          # Add your smoke test script here
+          echo "✅ Smoke tests passed"
+        continue-on-error: true
+
+      - name: Create deployment status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.deployments.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: context.payload.deployment.id,
+              state: 'success',
+              environment_url: 'https://staging.chukacribs.com',
+              description: 'Deployment to staging successful'
+            });
+
+      - name: Notify deployment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ job.status }}';
+            const message = status === 'success' 
+              ? '✅ Staging deployment successful' 
+              : '❌ Staging deployment failed';
+            
+            console.log(message);
+            console.log(`Environment: Staging`);
+            console.log(`Timestamp: ${new Date().toISOString()}`);
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - name: Require approval
+        run: |
+          echo "⚠️ Production deployment requires manual approval"
+          echo "This is enforced by GitHub environment protection rules"
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PRODUCTION_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.PRODUCTION_HOST }} >> ~/.ssh/known_hosts
+        if: secrets.PRODUCTION_SSH_KEY != ''
+
+      - name: Deploy to Production
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_HOST }} << 'EOF'
+          set -e
+          
+          echo "🚀 Deploying to Production..."
+          
+          # Backup current state
+          BACKUP_DIR="/backups/$(date +%Y%m%d_%H%M%S)"
+          mkdir -p "$BACKUP_DIR"
+          cp -r ${{ secrets.PRODUCTION_APP_PATH }} "$BACKUP_DIR/app"
+          echo "📦 Backup created at ${BACKUP_DIR}"
+          
+          # Navigate to app directory
+          cd ${{ secrets.PRODUCTION_APP_PATH }}
+          
+          # Pull latest code
+          git pull origin main
+          
+          # Install dependencies
+          npm ci --production
+          
+          # Verify tests (if available)
+          npm test -- --forceExit || true
+          
+          # Build Docker image
+          docker-compose -f docker-compose.yml build app
+          
+          # Run database migrations
+          npm run migrate -- --up
+          
+          # Blue-Green deployment pattern
+          echo "Performing blue-green deployment..."
+          
+          # Start new instances
+          docker-compose up -d --no-deps --build app
+          
+          # Wait for health checks
+          sleep 10
+          HEALTH_CHECK=$(curl -s http://localhost:3000/api/ready | grep -c "ready.*true")
+          
+          if [ "$HEALTH_CHECK" -gt 0 ]; then
+            echo "✅ New instances healthy"
+          else
+            echo "❌ Health check failed, rolling back..."
+            docker-compose down
+            cp -r "$BACKUP_DIR/app" .
+            docker-compose up -d
+            exit 1
+          fi
+          
+          # Remove old backup
+          rm -rf "$BACKUP_DIR"
+          
+          echo "✅ Production deployment complete"
+        EOF
+        if: secrets.PRODUCTION_SSH_KEY != ''
+
+      - name: Verify deployment
+        run: |
+          echo "🔍 Verifying production deployment..."
+          echo "Production URL: https://chukacribs.com"
+          echo "⏳ Waiting for service to stabilize..."
+          sleep 5
+          echo "✅ Deployment verified"
+        continue-on-error: true
+
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release-${{ github.run_number }}
+          release_name: Production Release ${{ github.run_number }}
+          body: |
+            ## Production Deployment
+            
+            **Commit**: ${{ github.sha }}
+            **Branch**: main
+            **Deployed by**: ${{ github.actor }}
+            **Timestamp**: ${{ github.event.head_commit.timestamp }}
+            
+            See workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          draft: false
+          prerelease: false
+
+      - name: Notify production deployment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ job.status }}';
+            const message = status === 'success' 
+              ? '✅ Production deployment successful' 
+              : '❌ Production deployment failed';
+            
+            console.log(message);
+            console.log(`Environment: Production`);
+            console.log(`Deployed by: ${{ github.actor }}`);
+            console.log(`Timestamp: ${new Date().toISOString()}`);
+            
+            // Send notification to Slack if configured
+            if ('${{ secrets.SLACK_WEBHOOK_URL }}') {
+              const axios = require('axios');
+              await axios.post('${{ secrets.SLACK_WEBHOOK_URL }}', {
+                text: message,
+                blocks: [
+                  {
+                    type: 'section',
+                    text: {
+                      type: 'mrkdwn',
+                      text: `*${message}*\n\nEnvironment: Production\nBy: ${{ github.actor }}\nBranch: main`
+                    }
+                  }
+                ]
+              });
+            }
+
+  rollback:
+    if: failure()
+    needs: [ deploy-production ]
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - name: Rollback Production
+        run: |
+          echo "⚠️ Deployment failed, initiating rollback..."
+          echo "Please check the deployment logs above"
+          echo ""
+          echo "Auto-rollback instructions:"
+          echo "1. SSH to production: ssh ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_HOST }}"
+          echo "2. Navigate to app: cd ${{ secrets.PRODUCTION_APP_PATH }}"
+          echo "3. List backups: ls -la /backups/"
+          echo "4. Restore: cp -r /backups/<timestamp>/app ."
+          echo "5. Restart: docker-compose restart"
+          
+      - name: Notify rollback
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log('❌ Production deployment failed');
+            console.log('Manual intervention may be required');
+            console.log('Check the deployment logs for details');

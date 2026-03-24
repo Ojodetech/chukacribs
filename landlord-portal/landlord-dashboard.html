@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ChukaCribs Landlord Portal</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-btn {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .properties-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .property-card {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .property-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .property-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .property-info {
+            padding: 1rem;
+        }
+
+        .property-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .property-price {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-location {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .modal-footer button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Managed Items Styles */
+        .managed-property-item,
+        .booking-item {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .property-info {
+            flex: 1;
+        }
+
+        .property-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+
+        .property-info p {
+            margin: 0.3rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .property-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 0.8rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .btn-small:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .booking-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+
+        .booking-info p {
+            margin: 0.3rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Responsive - Tablet (768px) */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .action-btn {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .properties-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+                margin: 10% auto;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+
+        /* Mobile Responsive - Large Phone (768px and below) */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .navbar-right {
+                gap: 1rem;
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            .user-info {
+                text-align: right;
+            }
+
+            .user-email {
+                font-size: 0.75rem;
+            }
+
+            .container {
+                margin: 1rem auto;
+                padding: 0 0.75rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.8rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .action-btn {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .properties-section {
+                padding: 1rem;
+                border-radius: 8px;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .property-card {
+                border-radius: 8px;
+            }
+
+            .property-image {
+                height: 180px;
+            }
+
+            .property-info {
+                padding: 0.75rem;
+            }
+
+            .property-title {
+                font-size: 0.95rem;
+            }
+
+            .property-price {
+                font-size: 0.9rem;
+            }
+
+            .property-location {
+                font-size: 0.85rem;
+            }
+
+            .property-status {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.6rem;
+            }
+
+            /* Modal Responsive */
+            .modal-content {
+                width: 98%;
+                padding: 1rem;
+                margin: 15% auto;
+                max-height: 85vh;
+                border-radius: 8px;
+            }
+
+            .modal-header {
+                margin-bottom: 1rem;
+                padding-bottom: 0.75rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.2rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-group label {
+                font-size: 0.95rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.6rem;
+                font-size: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .modal-footer button {
+                padding: 0.65rem 1rem;
+                font-size: 0.9rem;
+                width: 100%;
+            }
+
+            /* Managed Items Responsive */
+            .managed-property-item,
+            .booking-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .property-actions {
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            .btn-small {
+                flex: 1;
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Mobile Responsive - Small Phone (480px and below) */
+        @media (max-width: 480px) {
+            .navbar {
+                flex-direction: column;
+                padding: 0.75rem;
+                gap: 0.75rem;
+            }
+
+            .navbar-brand {
+                font-size: 1rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .navbar-right {
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .user-info {
+                text-align: center;
+                width: 100%;
+            }
+
+            .user-name {
+                font-size: 0.9rem;
+                margin-bottom: 0.1rem;
+            }
+
+            .user-email {
+                font-size: 0.7rem;
+            }
+
+            .btn-logout {
+                width: 100%;
+                padding: 0.6rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .container {
+                margin: 0.75rem auto;
+                padding: 0 0.5rem;
+            }
+
+            .error-message {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+                font-size: 0.85rem;
+            }
+
+            .loading {
+                padding: 2rem;
+                font-size: 1rem;
+            }
+
+            .spinner {
+                width: 30px;
+                height: 30px;
+                border-width: 3px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .stat-card {
+                padding: 0.75rem;
+            }
+
+            .stat-icon {
+                font-size: 1.5rem;
+                margin-bottom: 0.2rem;
+            }
+
+            .stat-value {
+                font-size: 1.25rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+                gap: 0.4rem;
+                margin-bottom: 1rem;
+            }
+
+            .action-btn {
+                padding: 0.65rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .properties-section {
+                padding: 0.75rem;
+                margin-bottom: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .property-card {
+                border-radius: 6px;
+            }
+
+            .property-image {
+                height: 150px;
+                font-size: 2rem;
+            }
+
+            .property-info {
+                padding: 0.5rem;
+            }
+
+            .property-title {
+                font-size: 0.9rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .property-price {
+                font-size: 0.85rem;
+            }
+
+            .property-location {
+                font-size: 0.8rem;
+            }
+
+            .property-status {
+                font-size: 0.65rem;
+                padding: 0.15rem 0.5rem;
+            }
+
+            .empty-state {
+                padding: 2rem 1rem;
+                font-size: 0.95rem;
+            }
+
+            .empty-state-icon {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            /* Modal Responsive - Full Screen on Small Phones */
+            .modal-content {
+                width: 100%;
+                padding: 0.75rem;
+                margin: 20% 0;
+                max-height: 90vh;
+                border-radius: 6px;
+            }
+
+            .modal-header {
+                margin-bottom: 0.75rem;
+                padding-bottom: 0.5rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .close-btn {
+                font-size: 1.3rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.75rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.55rem;
+                font-size: 16px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0.4rem;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+                gap: 0.4rem;
+                margin-top: 1rem;
+            }
+
+            .modal-footer button {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+                width: 100%;
+            }
+
+            .btn-cancel {
+                background: #f0f0f0;
+            }
+
+            /* Managed Items on Small Screen */
+            .managed-property-item,
+            .booking-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .property-info {
+                width: 100%;
+            }
+
+            .property-actions {
+                width: 100%;
+                gap: 0.4rem;
+            }
+
+            .btn-small {
+                flex: 1;
+                padding: 0.45rem;
+                font-size: 0.75rem;
+            }
+
+            .amenities-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+
+            .amenity-checkbox {
+                margin: 0.25rem 0;
+            }
+
+            .file-input-group {
+                margin-bottom: 0.75rem;
+            }
+
+            .file-label {
+                font-size: 0.85rem;
+                display: block;
+                margin-bottom: 0.25rem;
+            }
+
+            .file-input {
+                width: 100%;
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Extra Small Screen (320px and below) */
+        @media (max-width: 320px) {
+            .navbar-brand {
+                font-size: 0.9rem;
+            }
+
+            .stat-value {
+                font-size: 1.1rem;
+            }
+
+            .modal-content {
+                width: 100%;
+                margin: 25% 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="navbar-brand">
+            🏠 ChukaCribs Landlord
+        </div>
+        <div class="navbar-right">
+            <div class="user-info">
+                <div class="user-name" id="userName">Loading...</div>
+                <div class="user-email" id="userEmail">Loading...</div>
+            </div>
+            <button class="btn-logout" id="logoutBtn">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage"></div>
+
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <p>Loading your dashboard...</p>
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboardContent" class="hidden">
+            <!-- Statistics -->
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-value" id="totalProperties">0</div>
+                    <div class="stat-label">Total Properties</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="activeListings">0</div>
+                    <div class="stat-label">Active Listings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="totalBookings">0</div>
+                    <div class="stat-label">Total Bookings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👁️</div>
+                    <div class="stat-value" id="totalViews">0</div>
+                    <div class="stat-label">Total Views</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="action-buttons">
+                <button class="action-btn" id="addPropertyBtn">➕ Add Property</button>
+                <button class="action-btn" id="managePropertiesBtn">📋 Manage Properties</button>
+                <button class="action-btn" id="viewBookingsBtn">📅 View Bookings</button>
+                <button class="action-btn" id="accountSettingsBtn">⚙️ Account Settings</button>
+            </div>
+
+            <!-- Properties Section -->
+            <div class="properties-section">
+                <h2 class="section-title">Your Properties</h2>
+                <div class="properties-grid" id="propertiesGrid">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🏠</div>
+                        <p>No properties listed yet</p>
+                        <p class="muted-small">Add your first property to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Settings Modal -->
+        <div id="accountSettingsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>⚙️ Account Settings</h2>
+                    <button class="close-btn" data-close="accountSettingsModal">&times;</button>
+                </div>
+                <form id="accountSettingsForm">
+                    <div class="form-group">
+                        <label for="settingsName">Full Name</label>
+                        <input type="text" id="settingsName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="settingsEmail">Email</label>
+                        <input type="email" id="settingsEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="settingsPhone">Phone</label>
+                        <input type="tel" id="settingsPhone" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" data-close="accountSettingsModal">Cancel</button>
+                        <button type="submit" class="btn-submit">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Manage Properties Modal -->
+        <div id="managePropertiesModal" class="modal">
+            <div class="modal-content modal-content--wide">
+                <div class="modal-header">
+                    <h2>📋 Manage Properties</h2>
+                    <button class="close-btn" data-close="managePropertiesModal">&times;</button>
+                </div>
+                <div id="managedPropertiesContainer" class="modal-scroll">
+                    <p>Loading...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" data-close="managePropertiesModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Bookings Modal -->
+        <div id="viewBookingsModal" class="modal">
+            <div class="modal-content modal-content--wide">
+                <div class="modal-header">
+                    <h2>📅 Bookings</h2>
+                    <button class="close-btn" data-close="viewBookingsModal">&times;</button>
+                </div>
+                <div id="bookingsContainer" class="modal-scroll">
+                    <p>Loading...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" data-close="viewBookingsModal">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Property Modal -->
+        <div id="addPropertyModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>➕ Add New Property</h2>
+                    <button class="close-btn" id="closeModalBtn">&times;</button>
+                </div>
+
+                <div class="success-message" id="successMessage">
+                    Property added successfully! Refreshing...
+                </div>
+
+                <form id="propertyForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="propertyTitle">Property Title *</label>
+                        <input type="text" id="propertyTitle" placeholder="e.g., Cozy 2-Bedroom Apartment" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="propertyLocation">Location *</label>
+                            <input type="text" id="propertyLocation" placeholder="e.g., Chuka, Kenya" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="propertyPrice">Monthly Price (KSH) *</label>
+                            <input type="number" id="propertyPrice" placeholder="e.g., 15000" required min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="propertyType">Property Type *</label>
+                            <select id="propertyType" required>
+                                <option value="">Select Type</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="single">Single Room</option>
+                                <option value="double">Double Room</option>
+                                <option value="bedsitter">Bedsitter</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="propertyBedrooms">Bedrooms *</label>
+                            <input type="number" id="propertyBedrooms" placeholder="e.g., 2" required min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="propertyMedia">Property Images & Videos</label>
+                        <input type="file" id="propertyMedia" multiple accept="image/*,video/*">
+                        <p class="muted-note">Upload multiple images and videos (PNG, JPG, GIF, MP4, WebM)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-strong">Amenities</label>
+                        <div class="amenities-row">
+                            <div class="amenity-item">
+                                <input type="checkbox" id="propertyWifi" name="wifi">
+                                <label for="propertyWifi" class="amenity-label">📶 WiFi</label>
+                            </div>
+                            <div class="amenity-item">
+                                <input type="checkbox" id="propertyWater" name="water">
+                                <label for="propertyWater" class="amenity-label">💧 Water</label>
+                            </div>
+                            <div class="amenity-item">
+                                <input type="checkbox" id="propertyElectricity" name="electricity">
+                                <label for="propertyElectricity" class="amenity-label">⚡ Electricity</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn-submit">Add Property</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/landlord-portal/js/landlord-dashboard.js"></script>
+</body>
+</html>

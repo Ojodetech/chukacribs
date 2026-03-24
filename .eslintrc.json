@@ -1,0 +1,55 @@
+{
+  "env": {
+    "node": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": ["eslint:recommended"],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": "off",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_|^req$|^res$|^next$|^err$",
+        "varsIgnorePattern": "^_|^logger|^transporter"
+      }
+    ],
+    "no-var": "warn",
+    "prefer-const": "warn",
+    "eqeqeq": "error",
+    "curly": "warn",
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error",
+    "no-throw-literal": "error",
+    "prefer-template": "off",
+    "no-param-reassign": "warn",
+    "no-shadow": "warn",
+    "consistent-return": "off",
+    "complexity": ["warn", 15],
+    "no-dupe-keys": "error",
+    "no-undef": "error"
+  },
+  "globals": {
+    "process": "readonly"
+  },
+  "overrides": [
+    {
+      "files": ["public/**/*.js", "landlord-portal/**/*.js"],
+      "env": {
+        "browser": true
+      },
+      "globals": {
+        "window": "readonly",
+        "document": "readonly",
+        "sessionStorage": "readonly",
+        "localStorage": "readonly",
+        "alert": "readonly"
+      }
+    }
+  ]
+}

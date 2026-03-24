@@ -1,0 +1,44 @@
+{
+  "apps": [
+    {
+      "name": "chukacribs-cluster",
+      "script": "./index.js",
+      "instances": "max",
+      "exec_mode": "cluster",
+      "max_memory_restart": "500M",
+      "merge_logs": false,
+      "output": "./logs/pm2/out.log",
+      "error": "./logs/pm2/err.log",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss Z",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 3000
+      },
+      "watch": false,
+      "ignore_watch": [
+        "node_modules",
+        "logs",
+        "backups",
+        ".git"
+      ],
+      "max_restarts": 10,
+      "min_uptime": "10s",
+      "autorestart": true,
+      "cron_restart": "0 2 * * *"
+    }
+  ],
+  "deploy": {
+    "production": {
+      "user": "chukacribs",
+      "host": "chukacribs.com",
+      "ref": "origin/main",
+      "repo": "https://github.com/chukacribs/chukacribs.git",
+      "path": "/var/www/chukacribs",
+      "post-deploy": "npm install && npm run build && pm2 reload ecosystem.config.js --env production",
+      "pre-deploy-local": "echo 'Deploying to production server'",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

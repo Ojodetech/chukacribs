@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center & FAQ - ChukaCribs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="css/help-center.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Help Center</h1>
+            <p>Get answers to common questions and find support resources</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search for help...">
+        </div>
+
+        <div class="content">
+            <a href="index.html" class="back-btn">← Back to Home</a>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="students">For Students</button>
+                <button class="tab-btn" data-tab="landlords">For Landlords</button>
+                <button class="tab-btn" data-tab="general">General</button>
+            </div>
+
+            <!-- Students Tab -->
+            <div id="students" class="tab-content active">
+                <h2 class="section-title">Student Guide</h2>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I create an account?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>1. Click on "Sign Up" or visit <strong>student-register.html</strong></p>
+                        <p>2. Fill in your details: name, email, phone, student ID, university, course, and year</p>
+                        <p>3. Create a strong password</p>
+                        <p>4. Verify your email address</p>
+                        <p>5. Your account is ready to use!</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I search for houses?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Use the search bar on the homepage:</strong></p>
+                        <p>• Enter location (e.g., "Chuka", "Near University")</p>
+                        <p>• Set your budget range</p>
+                        <p>• Filter by bedrooms, bathrooms, amenities</p>
+                        <p>• Sort by price, rating, or newest listings</p>
+                        <p>• Click on a property to view details</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>What does the 100 KSH access token cover?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The 100 KSH token provides access to:</p>
+                        <ul class="faq-list">
+                            <li>View detailed property listings</li>
+                            <li>Contact landlords directly</li>
+                            <li>Message landlords</li>
+                            <li>Make bookings</li>
+                            <li>Valid for 30 days</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I make a booking?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>1. Find the house you want</p>
+                        <p>2. Click "Book Now"</p>
+                        <p>3. Select check-in and check-out dates</p>
+                        <p>4. Review the booking details and price</p>
+                        <p>5. Complete the payment</p>
+                        <p>6. Receive booking confirmation via email/SMS</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I leave a review?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>• You can only review properties you've booked</p>
+                        <p>• After checkout, you'll see a "Leave Review" button</p>
+                        <p>• Rate on 5 stars and different categories</p>
+                        <p>• Add photos and detailed comments</p>
+                        <p>• Your review helps others make informed choices</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I save properties?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>• Click the heart icon on any property to save it</p>
+                        <p>• Access saved properties from your "Favorites" section</p>
+                        <p>• Add notes to remember why you saved it</p>
+                        <p>• Set reminders to follow up on properties</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I message a landlord?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>• Click "Message" on the property page</p>
+                        <p>• Ask questions about the property</p>
+                        <p>• Negotiate terms</p>
+                        <p>• Set up viewings</p>
+                        <p>• Landlords typically respond within 24 hours</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>What is Trust Score?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Trust Score (0-100):</strong> Shows how reliable you are as a tenant</p>
+                        <p><strong>Factors that increase it:</strong></p>
+                        <ul class="faq-list">
+                            <li>Completing bookings on time</li>
+                            <li>Positive reviews from landlords</li>
+                            <li>Quick responses to messages</li>
+                            <li>Following house rules</li>
+                        </ul>
+                        <p>Higher trust score = better booking opportunities</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I cancel a booking?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Cancellation Policy:</strong></p>
+                        <ul class="faq-list">
+                            <li>7+ days before check-in: Full refund</li>
+                            <li>3-7 days before: 50% refund</li>
+                            <li>Less than 3 days: No refund</li>
+                        </ul>
+                        <p>Contact the landlord to discuss cancellation terms</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Landlords Tab -->
+            <div id="landlords" class="tab-content">
+                <h2 class="section-title">Landlord Guide</h2>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I register as a landlord?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>1. Click "Landlord Portal" → "Register"</p>
+                        <p>2. Provide your details: name, email, phone, national ID</p>
+                        <p>3. Create a secure password</p>
+                        <p>4. Verify your email</p>
+                        <p>5. Complete your profile</p>
+                        <p>6. Start listing properties!</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I add a property?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>1. Go to "My Properties" in your dashboard</p>
+                        <p>2. Click "Add Property"</p>
+                        <p>3. Fill in details:</p>
+                        <ul class="faq-list">
+                            <li>Property name and location</li>
+                            <li>Price per month/day</li>
+                            <li>Number of bedrooms/bathrooms</li>
+                            <li>Amenities and features</li>
+                            <li>Description and house rules</li>
+                        </ul>
+                        <p>4. Upload high-quality photos and videos</p>
+                        <p>5. Submit for review and approval</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>What are the property listing requirements?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Photos:</strong></p>
+                        <ul class="faq-list">
+                            <li>Minimum 5 clear photos</li>
+                            <li>Include living areas, bedrooms, bathrooms</li>
+                            <li>Good lighting, high quality</li>
+                        </ul>
+                        <p><strong>Information:</strong></p>
+                        <ul class="faq-list">
+                            <li>Accurate pricing</li>
+                            <li>Clear property description</li>
+                            <li>List all amenities</li>
+                            <li>Specify house rules</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I manage bookings?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>• View all bookings in your dashboard</p>
+                        <p>• Confirm or reject booking requests</p>
+                        <p>• Check check-in and check-out dates</p>
+                        <p>• Communicate with tenants</p>
+                        <p>• Mark properties as occupied/available</p>
+                        <p>• Track payment status</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I respond to reviews?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>• View reviews in the "Reviews" section</p>
+                        <p>• Click "Respond" to any review</p>
+                        <p>• Address concerns professionally</p>
+                        <p>• Thank positive reviewers</p>
+                        <p>• Keep responses helpful and appropriate</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I withdraw earnings?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Payment Methods:</strong></p>
+                        <ul class="faq-list">
+                            <li>M-Pesa (instant)</li>
+                            <li>Bank transfer (2-3 business days)</li>
+                            <li>PesaPal</li>
+                        </ul>
+                        <p>• Minimum withdrawal: 1,000 KSH</p>
+                        <p>• No withdrawal fees</p>
+                        <p>• Go to "Earnings" → "Withdraw"</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>What is property verification?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Property verification ensures legitimacy:</p>
+                        <ul class="faq-list">
+                            <li>Admin reviews property details</li>
+                            <li>Checks photos for authenticity</li>
+                            <li>Verifies landlord credentials</li>
+                            <li>Protects both tenants and landlords</li>
+                        </ul>
+                        <p>Verified properties appear higher in search results</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How can I improve my listing visibility?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>• Use clear, detailed descriptions</p>
+                        <p>• Upload 10+ high-quality photos</p>
+                        <p>• Highlight unique amenities</p>
+                        <p>• Respond quickly to inquiries</p>
+                        <p>• Maintain excellent reviews</p>
+                        <p>• Update listings regularly</p>
+                        <p>• Set competitive prices</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>What if I have a problem with a tenant?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Contact us for support:</strong></p>
+                        <p>1. Document the issue (photos, messages)</p>
+                        <p>2. Contact support team immediately</p>
+                        <p>3. File a formal complaint if necessary</p>
+                        <p>4. ChukaCribs may mediate disputes</p>
+                        <p>5. We can help resolve conflicts</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- General Tab -->
+            <div id="general" class="tab-content">
+                <h2 class="section-title">General Questions</h2>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>Is ChukaCribs safe to use?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Security measures:</strong></p>
+                        <ul class="faq-list">
+                            <li>SSL encryption for all connections</li>
+                            <li>Secure payment processing</li>
+                            <li>Verified user accounts</li>
+                            <li>Trust score system</li>
+                            <li>Review verification</li>
+                            <li>Property authenticity checks</li>
+                        </ul>
+                        <p>Always use official ChukaCribs channels for communication</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>What payment methods do you accept?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>• M-Pesa (most popular)</p>
+                        <p>• PesaPal</p>
+                        <p>• Debit/Credit Card</p>
+                        <p>• Bank transfer</p>
+                        <p>All payments are processed securely</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>Do you charge commission fees?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>Pricing:</strong></p>
+                        <ul class="faq-list">
+                            <li>Student access token: 100 KSH (30 days)</li>
+                            <li>Landlord listing: FREE</li>
+                            <li>Booking commission: 5% (from landlord)</li>
+                            <li>Payment processing: 2.5%</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I change my language preference?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Currently available languages:</p>
+                        <ul class="faq-list">
+                            <li>English</li>
+                            <li>Kiswahili</li>
+                            <li>French</li>
+                        </ul>
+                        <p>Select your preferred language from the settings menu</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I delete my account?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>1. Go to Account Settings</p>
+                        <p>2. Click "Delete Account"</p>
+                        <p>3. Confirm your decision</p>
+                        <p>4. Your data will be permanently deleted</p>
+                        <p>Note: This action cannot be undone</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>Is there a mobile app?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Our website is fully mobile-responsive</p>
+                        <p>Install as PWA (Progressive Web App):</p>
+                        <ul class="faq-list">
+                            <li>Open in mobile browser</li>
+                            <li>Tap "Share" → "Add to Home Screen"</li>
+                            <li>Access like a native app</li>
+                        </ul>
+                        <p>Native apps coming soon!</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-action="toggle-faq">
+                        <span>How do I report a property or user?</span>
+                        <span class="faq-icon">▼</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>1. Open the property/profile page</p>
+                        <p>2. Click "Report" button</p>
+                        <p>3. Select reason for report</p>
+                        <p>4. Add details and evidence</p>
+                        <p>5. Submit - we'll investigate within 24 hours</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="contact-info">
+                <h3>Still need help?</h3>
+                <p>Our support team is available 24/7 to assist you</p>
+                <div class="contact-links">
+                    <a href="mailto:support@chukacribs.com">📧 Email</a>
+                    <a href="tel:+254712345678">📞 Call</a>
+                    <a href="#">💬 Chat with us</a>
+                    <a href="#">📱 WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/help-center.js"></script>
+</body>
+</html>

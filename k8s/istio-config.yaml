@@ -1,0 +1,202 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: chukacribs-virtual-service
+  namespace: chukacribs
+spec:
+  hosts:
+  - chukacribs
+  http:
+  # Canary deployment: 10% traffic to v2, 90% to v1
+  - match:
+    - uri:
+        prefix: /api/v2
+    route:
+    - destination:
+        host: chukacribs-service
+        port:
+          number: 3000
+        subset: v2
+      weight: 10
+    - destination:
+        host: chukacribs-service
+        port:
+          number: 3000
+        subset: v1
+      weight: 90
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+  # Default routing
+  - route:
+    - destination:
+        host: chukacribs-service
+        port:
+          number: 3000
+        subset: v1
+      weight: 100
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: chukacribs-destination-rule
+  namespace: chukacribs
+spec:
+  host: chukacribs-service
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50
+        maxRequestsPerConnection: 10
+        h2UpgradePolicy: UPGRADE
+    loadBalancer:
+      simple: ROUND_ROBIN
+    outlierDetection:
+      consecutive5xxErrors: 5
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
+      minRequestVolume: 5
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+---
+apiVersion: networking.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: chukacribs-jwt-auth
+  namespace: chukacribs
+spec:
+  rules:
+  - from:
+    - requestPrincipal: "https://auth.chukacribs.com"
+    to:
+    - operation:
+        methods: ["GET", "POST", "PUT", "DELETE"]
+        paths: ["/api/*"]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: chukacribs-authz
+  namespace: chukacribs
+spec:
+  selector:
+    matchLabels:
+      app: chukacribs
+  action: ALLOW
+  rules:
+  # Allow public endpoints
+  - from:
+    - source:
+        principals: ["cluster.local/ns/chukacribs/sa/default"]
+    to:
+    - operation:
+        methods: ["GET"]
+        paths: ["/api/houses*", "/health", "/api-docs*"]
+  # Allow authenticated requests
+  - from:
+    - source:
+        requestPrincipals: ["*"]
+    to:
+    - operation:
+        methods: ["GET", "POST", "PUT", "DELETE"]
+        paths: ["/api/*"]
+  # Allow health checks
+  - to:
+    - operation:
+        methods: ["GET"]
+        paths: ["/health"]
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: chukacribs-gateway
+  namespace: chukacribs
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "chukacribs.com"
+    - "www.chukacribs.com"
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: chukacribs-tls-cert
+    hosts:
+    - "chukacribs.com"
+    - "www.chukacribs.com"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: chukacribs-ingress-vs
+  namespace: chukacribs
+spec:
+  hosts:
+  - chukacribs.com
+  - www.chukacribs.com
+  gateways:
+  - chukacribs-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /api
+    route:
+    - destination:
+        host: chukacribs-service
+        port:
+          number: 3000
+        subset: v1
+      weight: 100
+    timeout: 30s
+    retries:
+      attempts: 3
+      perTryTimeout: 10s
+  - route:
+    - destination:
+        host: chukacribs-service
+        port:
+          number: 3000
+        subset: v1
+      weight: 100
+---
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: chukacribs-telemetry
+  namespace: chukacribs
+spec:
+  metrics:
+  - providers:
+    - name: prometheus
+  tracing:
+  - providers:
+    - name: jaeger
+    randomSamplingPercentage: 100
+    customTags:
+      environment:
+        literal:
+          value: "production"
+      service:
+        literal:
+          value: "chukacribs"

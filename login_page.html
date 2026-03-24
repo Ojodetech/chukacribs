@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Login to ChukaCribs Landlord Portal - Manage your properties">
+    <meta name="theme-color" content="#2563eb">
+    <title>Landlord Login - ChukaCribs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/landlord-portal/css/landlord-login.css">
+    <link rel="stylesheet" href="../css/loading.css">
+    <link rel="stylesheet" href="../css/error-styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="/" class="back-link">← Back to Home</a>
+    </nav>
+
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <span class="logo-icon">🏠</span>
+            <div class="logo-text">ChukaCribs</div>
+        </div>
+
+        <h1>Landlord Login</h1>
+        <p class="subtitle">Access your dashboard and manage your properties</p>
+
+        <!-- Success Message -->
+        <div class="message success" id="successMessage">
+            ✓ Login successful! Redirecting to dashboard...
+        </div>
+
+        <!-- Error Message -->
+        <div class="message error" id="generalError"></div>
+
+        <!-- Login Form -->
+        <form id="loginForm">
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email"
+                    placeholder="your@email.com"
+                    required
+                    aria-label="Email address"
+                >
+                <div class="form-error" id="emailError"></div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <div class="password-input-wrapper">
+                    <label for="password">Password</label>
+                    <button 
+                        type="button" 
+                        class="password-toggle password-hidden" 
+                        data-action="toggle-password" 
+                        data-target="password"
+                        aria-label="Show password"
+                    >
+                        <span class="password-icon">👁️</span>
+                    </button>
+                </div>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                    aria-label="Password"
+                >
+                <div class="form-error" id="passwordError"></div>
+            </div>
+
+            <!-- Remember Me -->
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Remember me on this device</label>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Login</button>
+
+            <!-- Forgot Password Link -->
+            <div class="forgot-link-container">
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div class="loading" id="loading">
+                <div class="loading-content">
+                    <div class="spinner"></div>
+                    <p>Logging in...</p>
+                </div>
+            </div>
+        </form>
+
+        <!-- Sign Up Link -->
+        <div class="auth-footer">
+            <p class="auth-footer-text">Don't have an account?</p>
+            <a href="landlord-register.html" class="btn btn-secondary">Create Account</a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/landlord-portal/js/password-toggle.js"></script>
+    <script src="/landlord-portal/js/landlord-login.js"></script>
+</body>
+</html>

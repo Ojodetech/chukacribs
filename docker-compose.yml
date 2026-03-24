@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  # MongoDB database
+  mongodb:
+    image: mongo:7.0-alpine
+    container_name: chuka-cribs-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-password}
+      MONGO_INITDB_DATABASE: chuka_cribs
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chuka-cribs-network
+
+  # Redis cache (optional, for session management)
+  redis:
+    image: redis:7-alpine
+    container_name: chuka-cribs-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chuka-cribs-network
+
+  # Node.js application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chuka-cribs-app
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Node environment
+      NODE_ENV: ${NODE_ENV:-development}
+      
+      # Server config
+      PORT: ${PORT:-3000}
+      HOST: ${HOST:-0.0.0.0}
+      
+      # Database
+      MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME:-admin}:${MONGO_INITDB_ROOT_PASSWORD:-password}@mongodb:27017/chuka_cribs?authSource=admin
+      
+      # Redis (for session/cache)
+      REDIS_URL: redis://redis:6379
+      
+      # JWT & Auth
+      JWT_SECRET: ${JWT_SECRET:-your-jwt-secret-key-change-in-production}
+      JWT_EXPIRE: ${JWT_EXPIRE:-7d}
+      ADMIN_SECRET_KEY: ${ADMIN_SECRET_KEY:-your-admin-secret-key-change-in-production}
+      
+      # Email configuration
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SENDER_EMAIL: ${SENDER_EMAIL:-noreply@chukacribs.com}
+      SENDER_PASSWORD: ${SENDER_PASSWORD:-your-email-password}
+      
+      # SMS configuration
+      SMS_API_KEY: ${SMS_API_KEY:-your-sms-api-key}
+      SMS_API_URL: ${SMS_API_URL:-https://api.sms-provider.com}
+      SMS_SENDER_ID: ${SMS_SENDER_ID:-CHUKACRIBS}
+      
+      # Payment integration
+      MPESA_API_KEY: ${MPESA_API_KEY:-your-mpesa-key}
+      MPESA_BUSINESS_SHORTCODE: ${MPESA_BUSINESS_SHORTCODE:-your-shortcode}
+      PESAPAL_API_KEY: ${PESAPAL_API_KEY:-your-pesapal-key}
+      PESAPAL_SECRET_KEY: ${PESAPAL_SECRET_KEY:-your-pesapal-secret}
+      
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      
+      # Optional: Error tracking
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      
+      # HTTPS
+      HTTPS_ENABLED: ${HTTPS_ENABLED:-false}
+    
+    ports:
+      - "3000:3000"
+    
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - ./logs:/app/logs
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    networks:
+      - chuka-cribs-network
+    
+    stdin_open: true
+    tty: true
+
+volumes:
+  mongodb_data:
+  mongodb_config:
+  redis_data:
+
+networks:
+  chuka-cribs-network:
+    driver: bridge

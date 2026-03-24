@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verified - ChukaCribs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/landlord-portal/css/verify-email.css">
+</head>
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .success-box {
+            background-color: #d5f4e6;
+            border-left: 4px solid #27ae60;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+
+        .success-box p {
+            color: #27603a;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .success-box strong {
+            color: #1d3f2c;
+        }
+
+        .next-steps {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .next-steps h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+
+        .step-icon {
+            margin-right: 12px;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .step-content strong {
+            color: #2c3e50;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-direction: column;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            border: 1px solid #bdc3c7;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+            transform: translateY(-2px);
+        }
+
+        .info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            color: #7f8c8d;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .redirect-timer {
+            color: #3498db;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .message {
+                font-size: 14px;
+            }
+
+            .next-steps {
+                padding: 20px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">ChukaCribs</div>
+        <div class="logo-subtitle">Student Accommodation Platform</div>
+
+        <div class="success-icon">
+            <div class="checkmark"></div>
+        </div>
+
+        <h1>Email Verified!</h1>
+
+        <p class="message">
+            Congratulations! Your email has been successfully verified.
+        </p>
+
+        <div class="success-box">
+            <p>
+                ✅ Your account is now active and ready to use
+            </p>
+            <p>
+                You can now log in and start listing your properties
+            </p>
+        </div>
+
+        <div class="next-steps">
+            <h3>What You Can Do Now</h3>
+            <div class="step">
+                <div class="step-icon">🔑</div>
+                <div class="step-content">
+                    <strong>Log in</strong> to your landlord account
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-icon">🏠</div>
+                <div class="step-content">
+                    <strong>Add properties</strong> to your portfolio
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-icon">📅</div>
+                <div class="step-content">
+                    <strong>Manage bookings</strong> from tenants
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-icon">💰</div>
+                <div class="step-content">
+                    <strong>Track earnings</strong> from your properties
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" data-action="go-to-login">
+                🔐 Go to Login
+            </button>
+            <button class="btn btn-secondary" data-action="go-to-register">
+                ← Back to Registration
+            </button>
+        </div>
+
+        <div class="info">
+            <p>
+                You will be automatically redirected to the login page in <span class="redirect-timer" id="timer">5</span> seconds...
+            </p>
+        </div>
+    </div>
+
+    <!-- External Script - CSP Compliant -->
+    <script src="/landlord-portal/js/verify-email-success.js"></script>
+</body>
+</html>

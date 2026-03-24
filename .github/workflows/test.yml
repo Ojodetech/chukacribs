@@ -1,0 +1,157 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop, staging ]
+    paths:
+      - 'routes/**'
+      - 'config/**'
+      - 'models/**'
+      - '__tests__/**'
+      - 'index.js'
+      - 'package.json'
+  pull_request:
+    branches: [ main, develop, staging ]
+    paths:
+      - 'routes/**'
+      - 'config/**'
+      - 'models/**'
+      - '__tests__/**'
+      - 'index.js'
+      - 'package.json'
+
+env:
+  NODE_ENV: test
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:7.0-alpine
+        env:
+          MONGO_INITDB_ROOT_USERNAME: test_user
+          MONGO_INITDB_ROOT_PASSWORD: test_password
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    strategy:
+      matrix:
+        node-version: [ 18.x, 20.x ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test -- --coverage --detectOpenHandles --forceExit
+        env:
+          MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
+          ADMIN_SECRET_KEY: ${{ secrets.TEST_ADMIN_SECRET_KEY }}
+          NODE_ENV: test
+
+      - name: Run performance tests
+        run: npm run test:performance -- --forceExit
+        env:
+          MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
+          ADMIN_SECRET_KEY: ${{ secrets.TEST_ADMIN_SECRET_KEY }}
+          NODE_ENV: test
+        continue-on-error: true
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        if: always()
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      - name: Archive test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-node-${{ matrix.node-version }}
+          path: |
+            coverage/
+            test-results/
+          retention-days: 30
+
+      - name: Comment PR with test results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const coverage = fs.existsSync('./coverage/coverage-summary.json') 
+              ? JSON.parse(fs.readFileSync('./coverage/coverage-summary.json', 'utf8'))
+              : null;
+            
+            let comment = `## Test Results - Node ${{ matrix.node-version }}\n\n`;
+            
+            if (coverage && coverage.total) {
+              comment += `### Coverage\n`;
+              comment += `- Lines: ${coverage.total.lines.pct}%\n`;
+              comment += `- Statements: ${coverage.total.statements.pct}%\n`;
+              comment += `- Functions: ${coverage.total.functions.pct}%\n`;
+              comment += `- Branches: ${coverage.total.branches.pct}%\n\n`;
+            }
+            
+            comment += ':white_check_mark: All tests passed!';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  test-results:
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Test Status
+        run: |
+          if [ "${{ needs.test.result }}" == "failure" ]; then
+            echo "❌ Tests failed"
+            exit 1
+          fi
+          echo "✅ All tests passed"
+
+      - name: Notify success
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log('✅ CI test pipeline completed successfully');

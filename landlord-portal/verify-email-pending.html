@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email - ChukaCribs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/landlord-portal/css/verify-email.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">ChukaCribs</div>
+        <div class="logo-subtitle">Student Accommodation Platform</div>
+
+        <div class="status-badge">⏳ Waiting for Verification</div>
+
+        <div class="icon">📧</div>
+
+        <h1>Verify Your Email</h1>
+
+        <p class="message">
+            Congratulations! Your landlord account has been created. We've sent a verification email to your inbox. Click the verification link in the email to confirm your email address and complete your registration.
+        </p>
+
+        <div class="email-display">
+            <p>Verification email sent to:</p>
+            <strong id="userEmail">your-email@example.com</strong>
+        </div>
+
+        <div class="steps">
+            <h3>What's Next?</h3>
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    Open your <strong>email inbox</strong>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    Look for an email from <strong>ChukaCribs</strong>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    Click the <strong>"Verify Email Address"</strong> button
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    You'll be redirected to the <strong>login page</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="timer">
+            <span class="timer-icon">⏱️</span>
+            This link is valid for <strong>15 minutes</strong>
+        </div>
+
+        <div class="actions">
+            <button class="btn check-email-button" data-action="open-email">
+                ✉️ Open Email Client
+            </button>
+            <button class="btn btn-secondary" data-action="go-to-login">
+                ← Back to Login
+            </button>
+        </div>
+
+        <div class="support">
+            <p>
+                <strong>Didn't receive the email?</strong><br>
+                Check your spam/junk folder, or
+                <button class="link-button" data-action="resend-email">resend verification email</button>
+            </p>
+            <p class="support-text">
+                Need help? <a href="mailto:support@chukacribs.com">Contact Support</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- External Script - CSP Compliant -->
+    <script src="/landlord-portal/js/verify-email-pending.js"></script>
+</body>
+</html>

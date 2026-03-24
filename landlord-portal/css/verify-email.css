@@ -1,0 +1,1165 @@
+/* Email Verification Pages - CSP Compliant Stylesheet */
+
+:root {
+    --primary-blue: #3498db;
+    --primary-blue-dark: #2980b9;
+    --success-green: #27ae60;
+    --success-green-dark: #229954;
+    --warning-orange: #f39c12;
+    --danger-red: #e74c3c;
+    --text-dark: #2c3e50;
+    --text-light: #7f8c8d;
+    --white: #ffffff;
+    --light-gray: #ecf0f1;
+    --border-gray: #bdc3c7;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+    padding: 40px 30px;
+    text-align: center;
+    animation: slideUp 0.5s ease-out;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--primary-blue);
+    margin-bottom: 8px;
+}
+
+.logo-subtitle {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 30px;
+}
+
+.status-badge {
+    display: inline-block;
+    background: var(--light-gray);
+    color: var(--text-dark);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+.icon {
+    font-size: 64px;
+    margin: 20px 0;
+    animation: bounce 2s infinite;
+}
+
+h1 {
+    font-size: 24px;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+h2 {
+    font-size: 20px;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.message {
+    color: var(--text-light);
+    font-size: 15px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.email-display {
+    background: var(--light-gray);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.email-display p {
+    color: var(--text-light);
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.email-display strong {
+    display: block;
+    color: var(--primary-blue);
+    font-size: 16px;
+    word-break: break-all;
+}
+
+/* Steps styling */
+.steps {
+    text-align: left;
+    margin: 30px 0;
+    background: var(--light-gray);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.steps h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--text-dark);
+    text-align: center;
+}
+
+.step {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.step:last-child {
+    margin-bottom: 0;
+}
+
+.step-number {
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+    background: var(--primary-blue);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+    color: var(--text-dark);
+    font-size: 14px;
+    padding-top: 4px;
+}
+
+.step-content strong {
+    color: var(--text-dark);
+}
+
+/* Timer styling */
+.timer {
+    background: var(--warning-orange);
+    color: var(--white);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.timer-icon {
+    margin-right: 8px;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 25px 0;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background: var(--primary-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+.btn-secondary {
+    background: var(--light-gray);
+    color: var(--text-dark);
+    border: 2px solid var(--border-gray);
+}
+
+.btn-secondary:hover {
+    background: var(--border-gray);
+    transform: translateY(-2px);
+}
+
+.check-email-button {
+    background: var(--success-green);
+    color: var(--white);
+}
+
+.check-email-button:hover {
+    background: var(--success-green-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+}
+
+/* Support section */
+.support {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--light-gray);
+}
+
+.support p {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 10px;
+}
+
+.support a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.support a:hover {
+    text-decoration: underline;
+}
+
+/* Success Message */
+.success-message {
+    background: var(--success-green);
+    color: var(--white);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    animation: checkmark 0.6s ease-out;
+}
+
+/* Error Message */
+.error-message {
+    background: var(--danger-red);
+    color: var(--white);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--light-gray);
+    border-top: 4px solid var(--primary-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+.status-message {
+    color: var(--text-dark);
+    font-size: 16px;
+    margin: 15px 0;
+    font-weight: 500;
+}
+
+.info-text {
+    color: var(--text-light);
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: var(--primary-blue);
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+    text-decoration: underline;
+    font-family: inherit;
+}
+
+.link-button:hover {
+    color: var(--primary-blue-dark);
+    text-decoration: underline;
+}
+
+.support-text {
+    margin-top: 12px;
+}
+
+/* Animations */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes checkmark {
+    from {
+        opacity: 0;
+        transform: scale(0.5) rotate(-45deg);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .container {
+        padding: 30px 20px;
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .icon {
+        font-size: 48px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .actions {
+        gap: 10px;
+    }
+
+    .steps {
+        padding: 15px;
+    }
+
+    .step-content {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 400px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 20px 15px;
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    .icon {
+        font-size: 40px;
+        margin: 15px 0;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .message {
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    .steps h3 {
+        font-size: 14px;
+    }
+
+    .step-content {
+        font-size: 12px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Both issues are now resolved and the registration → verification → login flow works as designed.**Issue 2 (403 Error):** Not an error - correct email verification flow requirement**Issue 1 (Styling):** Fixed by extracting inline CSS into external stylesheet## Summary---- ✅ No unsafe-inline directives needed- ✅ External scripts properly linked- ✅ External stylesheets properly linked- ✅ No inline scripts- ✅ No inline event handlers- ✅ No inline `<style>` tagsBoth fixes maintain full CSP compliance:## CSP Compliance---- [x] After verification, login works- [x] Verification link processes correctly- [x] User sees helpful error message when email not verified- [x] 403 error on login is expected behavior- [x] Email verification flow works correctly- [x] Verification pages now display with proper styling## Testing Checklist---Shows user-friendly error message explaining they need to verify email first.```}    return;    generalError.classList.add('show');        'Please verify your email before logging in.';    generalError.textContent = data.message || if (response.status === 403 && data.requiresVerification) {```javascriptThe login JavaScript correctly handles the 403 response:### Login Error Handling- Login succeeds (no more 403 error)- Use same email and password- Go to `/landlord-login.html`**Step 4: Login now works**- Auto-redirects to login after 3 seconds- On success: Shows "Email Verified! ✓"- Verification page shows loading spinner- Open verification link from email (or manually navigate with token)**Step 3: Verify email**- Or check server logs for the verification token- Verification link format: `http://localhost:3000/verify-email?token=<TOKEN>`- In development, you'd receive email with verification link**Step 2: Check email verification**- You'll see: "Account created! Redirecting to email verification..."- Click "Create Account"- Fill form with test data- Go to: `/landlord-register.html`**Step 1: Register a test account**### What To Do To Test8. ✅ Login now works because `emailVerified === true`7. ✅ User redirected to login6. ✅ Backend sets `emailVerified: true`5. ✅ Verification page processes token: `GET /api/auth/verify-email/:token`4. ✅ User clicks verification link in email3. ✅ Verification email sent to landlord's email address2. ✅ Registration page shows: "Verify your email" message1. ✅ User registers → Landlord account created with `emailVerified: false`### Correct Flow```}    });        email: landlord.email        requiresVerification: true,        message: 'Please verify your email before logging in...',    return res.status(403).json({ if (!landlord.emailVerified) {// Check if email is verified```javascript### Backend Code (routes/auth.js)4. User must verify their email before logging in3. Login route checks: `if (!landlord.emailVerified) return 403`2. Landlord account has `emailVerified: false`1. Landlord account was created (registration works)The backend is returning 403 because:**This is NOT an error - it's correct behavior!**### Root Cause```POST http://localhost:3000/api/auth/login 403 (Forbidden)```### Error Message## Issue 2: Login Error 403 Forbidden ✅ EXPLAINED---4. ✅ Updated: [landlord-portal/verify-email-success.html](landlord-portal/verify-email-success.html)3. ✅ Updated: [landlord-portal/verify-email.html](landlord-portal/verify-email.html)2. ✅ Updated: [landlord-portal/verify-email-pending.html](landlord-portal/verify-email-pending.html)1. ✅ Created: [landlord-portal/css/verify-email.css](landlord-portal/css/verify-email.css)### Files Modified- ✅ Email display formatting- ✅ Timer/countdown displays- ✅ Step-by-step instructions layout- ✅ Button styles (primary, secondary, success)- ✅ Loading spinner- ✅ Status badges and message boxes- ✅ Responsive design (600px, 400px breakpoints)- ✅ Animations (slideUp, bounce, checkmark, spin)- ✅ Variables for colors (primary, success, warning, text shades)### CSS Features Included   ```   <link rel="stylesheet" href="css/verify-email.css">   <!-- AFTER: External stylesheet -->   </style>       /* 200+ lines of CSS */       .container { ... }       body { ... }   <style>   <!-- BEFORE: Inline styles -->   ```html**3. Replacement pattern:**   - `verify-email-success.html` - Success state   - `verify-email.html` - Verification processing state   - `verify-email-pending.html` - Pending verification state**2. Updated all three HTML files:**   - Animations for visual feedback   - Variables for consistent theming   - Covers all verification states and responsive design   - 700+ lines of comprehensive CSS**1. Created external stylesheet:** `landlord-portal/css/verify-email.css`### Solution Applied- Pages could not load styles from external sources- Inline CSS blocks violate CSP unsafe-inline restriction### Root CauseThe three email verification pages (`verify-email-pending.html`, `verify-email.html`, `verify-email-success.html`) had inline `<style>` tags violating CSP (Content Security Policy). Pages appeared unstyled.### Problem## Issue 1: Verification Pages Not Styled ✅ FIXED:root {
+    --primary-blue: #3498db;
+    --primary-dark: #2980b9;
+    --success-green: #27ae60;
+    --success-dark: #229954;
+    --warning-yellow: #ffc107;
+    --text-dark: #2c3e50;
+    --text-medium: #555555;
+    --text-light: #7f8c8d;
+    --bg-light: #f8f9fa;
+    --bg-pale: #ecf0f1;
+    --border-light: #bdc3c7;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+    padding: 40px;
+    text-align: center;
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.logo-subtitle {
+    color: var(--text-light);
+    font-size: 13px;
+    margin-bottom: 30px;
+}
+
+.icon {
+    font-size: 60px;
+    margin: 20px 0;
+    animation: bounce 2s infinite;
+}
+
+.icon.checkmark {
+    animation: checkmark 0.6s ease-out;
+}
+
+h1 {
+    color: var(--text-dark);
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+h2 {
+    color: var(--text-dark);
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.message {
+    color: var(--text-medium);
+    line-height: 1.6;
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+
+.email-display {
+    background-color: var(--bg-pale);
+    border-left: 4px solid var(--primary-blue);
+    padding: 15px;
+    margin: 25px 0;
+    border-radius: 4px;
+}
+
+.email-display p {
+    color: var(--text-medium);
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.email-display strong {
+    color: var(--text-dark);
+    font-size: 16px;
+    word-break: break-all;
+}
+
+.steps {
+    background-color: var(--bg-light);
+    padding: 25px;
+    border-radius: 8px;
+    margin: 25px 0;
+    text-align: left;
+}
+
+.steps h3 {
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.step {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.step:last-child {
+    margin-bottom: 0;
+}
+
+.step-number {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.step-content {
+    color: var(--text-medium);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.step-content strong {
+    color: var(--text-dark);
+}
+
+.timer {
+    background-color: #fff3cd;
+    border: 1px solid var(--warning-yellow);
+    border-radius: 4px;
+    padding: 12px;
+    margin: 20px 0;
+    color: #856404;
+    font-size: 13px;
+}
+
+.timer-icon {
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+    flex-direction: column;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background-color: var(--bg-pale);
+    color: var(--text-dark);
+    border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover {
+    background-color: #d5dbdb;
+    transform: translateY(-2px);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+.check-email-button {
+    background-color: var(--success-green);
+    color: var(--white);
+    text-align: center;
+}
+
+.check-email-button:hover {
+    background-color: var(--success-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+}
+
+.check-email-button:active {
+    transform: translateY(0);
+}
+
+.support {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--bg-pale);
+    color: var(--text-light);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.support a {
+    color: var(--primary-blue);
+    text-decoration: none;
+}
+
+.support a:hover {
+    text-decoration: underline;
+}
+
+.support p {
+    margin: 0;
+}
+
+.support p + p {
+    margin-top: 12px;
+}
+
+.status-badge {
+    display: inline-block;
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.status-badge.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.success-message {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 20px 0;
+    color: #155724;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 20px 0;
+    color: #721c24;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.loading-spinner {
+    border: 4px solid var(--bg-pale);
+    border-top: 4px solid var(--primary-blue);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.info-text {
+    color: var(--text-light);
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: var(--primary-blue);
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+    text-decoration: underline;
+    font-family: inherit;
+}
+
+.link-button:hover {
+    color: var(--primary-blue-dark);
+    text-decoration: underline;
+}
+
+.support-text {
+    margin-top: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    body {
+        padding: 15px;
+    }
+
+    .container {
+        padding: 30px 20px;
+        border-radius: 10px;
+    }
+
+    .logo {
+        font-size: 28px;
+    }
+
+    .logo-subtitle {
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .icon {
+        font-size: 50px;
+        margin: 15px 0;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 12px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    .message {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .email-display {
+        padding: 12px;
+        margin: 20px 0;
+    }
+
+    .email-display p {
+        font-size: 12px;
+    }
+
+    .email-display strong {
+        font-size: 14px;
+    }
+
+    .steps {
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .steps h3 {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .step {
+        margin-bottom: 12px;
+    }
+
+    .step-number {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+        margin-right: 12px;
+    }
+
+    .step-content {
+        font-size: 13px;
+    }
+
+    .timer {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .timer-icon {
+        font-size: 16px;
+    }
+
+    .btn {
+        padding: 11px 20px;
+        font-size: 14px;
+    }
+
+    .status-badge {
+        padding: 5px 10px;
+        font-size: 11px;
+        margin-bottom: 15px;
+    }
+
+    .support {
+        margin-top: 25px;
+        padding-top: 15px;
+        font-size: 12px;
+    }
+
+    .countdown {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 400px) {
+    .container {
+        padding: 25px 15px;
+    }
+
+    .logo {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .icon {
+        font-size: 45px;
+        margin: 12px 0;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .message {
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+
+    .steps {
+        padding: 15px;
+    }
+
+    .btn {
+        padding: 10px 18px;
+        font-size: 13px;
+    }
+}

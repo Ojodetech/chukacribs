@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="ChukaCribs - Available Houses and Listings">
+    <meta name="keywords" content="accommodation, student housing, Chuka, houses, rental">
+    <title>Available Listings - ChukaCribs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/mobile-optimized.css">
+    <link rel="stylesheet" href="/css/loading.css">
+    <link rel="stylesheet" href="/css/error-styles.css">
+    <link rel="stylesheet" href="/css/inline-refactor.css">
+</head>
+<body class="listings-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">🏠 ChukaCribs</div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="#listings">Listings</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Search and Filter Section -->
+    <section class="search-section">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by location, price, or features..." class="search-box">
+            <button class="search-btn">🔍</button>
+        </div>
+        <div class="filters">
+            <input type="text" id="searchInput" class="filter-select" placeholder="Search by title, location, or amenities...">
+            <select id="priceFilter" class="filter-select">
+                <option value="">All Prices</option>
+                <option value="0-5000">Up to 5,000 KSH</option>
+                <option value="5000-10000">5,000 - 10,000 KSH</option>
+                <option value="10000-20000">10,000 - 20,000 KSH</option>
+                <option value="20000+">20,000+ KSH</option>
+            </select>
+            <select id="typeFilter" class="filter-select">
+                <option value="">All Types</option>
+                <option value="single">Single Room</option>
+                <option value="double">Double Room</option>
+                <option value="apartment">Apartment</option>
+                <option value="bedsitter">Bedsitter</option>
+            </select>
+            <select id="sortSelect" class="filter-select">
+                <option value="newest">Newest First</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- House Listings Section -->
+    <section id="listings" class="listings-section">
+        <h2 class="section-title">All Available Houses</h2>
+        <div id="listingsContainer" class="listings-grid">
+            <!-- Dynamic listings will be loaded here -->
+        </div>
+        <div id="loadingSpinner" class="spinner"></div>
+        <div id="noListings" class="no-listings hidden">
+            <p>No listings found. Try adjusting your filters.</p>
+        </div>
+    </section>
+
+    <!-- House Preview Modal (Before Booking - Restricted View) -->
+    <div id="housePreviewModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-body preview-modal">
+                <div class="preview-header">
+                    <h2 id="previewTitle"></h2>
+                    <p id="previewType" class="house-type"></p>
+                    <p class="text-warning font-bold">📍 Location hidden until booking</p>
+                </div>
+                <div class="preview-content">
+                    <div class="modal-gallery">
+                        <div id="mainImage" class="main-image"></div>
+                        <div id="galleryThumbnails" class="gallery-thumbnails"></div>
+                    </div>
+                    <div class="preview-info">
+                        <div class="info-section">
+                            <h3>💰 Rent per Month</h3>
+                            <p id="previewPrice"></p>
+                        </div>
+                        <div class="info-section">
+                            <h3>🏠 Amenities Included</h3>
+                            <p id="previewDescription"></p>
+                        </div>
+                        <div class="info-section">
+                            <h3>🎬 Video Tour</h3>
+                            <div id="previewVideos"></div>
+                        </div>
+                        <div class="info-section">
+                            <h3>👤 Landlord Details</h3>
+                            <p id="previewLandlordName" class="text-success italic">📞 Available after booking via SMS</p>
+                            <p id="previewLandlordPhone"></p>
+                        </div>
+                    </div>
+                </div>
+                <button id="bookBtn" class="book-btn">Book This House & Unlock Landlord Contact</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- House Details Modal (After Booking - Full View) -->
+    <div id="houseModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-body">
+                <div class="modal-gallery">
+                    <div id="mainImage" class="main-image"></div>
+                    <div id="galleryThumbnails" class="gallery-thumbnails"></div>
+                </div>
+                <div class="modal-info">
+                    <div class="info-booking-panel">
+                        <p class="text-primary font-bold">✅ You have an active booking for this property</p>
+                    </div>
+                    <h2 id="modalTitle"></h2>
+                    <p id="modalLocation" class="location"></p>
+                    <p id="modalPrice" class="price"></p>
+                    <p id="modalDescription" class="description"></p>
+                    <div id="modalFeatures" class="features"></div>
+                    <div id="modalVideos" class="videos-section"></div>
+                    <div id="modalLandlordInfo" class="landlord-info"></div>
+                    <button id="fullBookBtn" class="book-btn">Manage Booking</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Confirmation Modal -->
+    <!-- modal is hidden by default until user clicks to book -->
+    <div id="bookingModal" class="modal hidden">
+        <div class="modal-content modal-small">
+            <span class="close">&times;</span>
+            <div class="modal-body booking-modal-body">
+                <h2>Confirm Your Booking</h2>
+                <div id="bookingDetails"></div>
+                <p class="booking-warning">⚠️ Your access token will expire after booking.</p>
+                <button id="confirmBookingBtn" class="confirm-btn">Confirm Booking</button>
+                <button id="cancelBookingBtn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- M-Pesa Payment Modal -->
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-content modal-small payment-modal">
+            <button id="closePaymentModal" class="close-payment-btn">&times;</button>
+            <div class="payment-modal-header">
+                <h2>🇰🇪 M-Pesa Payment</h2>
+                <p class="payment-subtitle">Secure 24-hour access to property listings</p>
+            </div>
+
+            <div class="payment-modal-body">
+                <!-- Payment Amount Display -->
+                <div class="payment-amount-display">
+                    <div class="amount-box">
+                        <p class="amount-label">Amount to Pay</p>
+                        <p class="amount-value">KSH 100</p>
+                        <p class="amount-description">One-time payment for 24-hour access</p>
+                    </div>
+                </div>
+
+                <!-- Phone Number Input -->
+                <div class="form-group">
+                    <label for="paymentPhoneNumber" class="form-label">
+                        📱 M-Pesa Phone Number
+                    </label>
+                    <input 
+                        type="tel" 
+                        id="paymentPhoneNumber" 
+                        class="form-input payment-phone-input"
+                        placeholder="e.g., 0712345678 or +254712345678"
+                        maxlength="15"
+                        autocomplete="tel"
+                    >
+                    <div id="phoneErrorMessage" class="error-message" style="display: none;"></div>
+                    <p class="input-hint">We'll send an M-Pesa prompt to this number</p>
+                </div>
+
+                <!-- Payment Status -->
+                <div id="paymentStatus" class="payment-status" style="display: none;"></div>
+
+                <!-- Payment Button -->
+                <button id="payNowButton" class="pay-button">
+                    💰 Pay with M-Pesa (100 KSH)
+                </button>
+
+                <!-- How It Works -->
+                <div class="how-it-works">
+                    <h4>How It Works:</h4>
+                    <ol>
+                        <li>Enter your M-Pesa phone number above</li>
+                        <li>Click "Pay with M-Pesa"</li>
+                        <li>Enter your M-Pesa PIN on your phone</li>
+                        <li>Get instant access to all property listings</li>
+                    </ol>
+                </div>
+
+                <!-- Security Note -->
+                <div class="security-note">
+                    🔒 Your payment is secure and encrypted. ChukaCribs does not store your M-Pesa PIN.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 ChukaCribs. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+
+    <script src="/js/loading.js"></script>
+    <script src="/js/error-manager.js"></script>
+    <script src="/js/form-validator.js"></script>
+    <script src="/js/image-compressor.js"></script>
+    <script src="/js/video-handler.js"></script>
+    <script src="/js/pwa-manager.js"></script>
+    <script src="/js/reviews-system.js"></script>
+    <script src="/js/payment-integration.js"></script>
+    <script src="js/listings.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chuka-cribs-config
+  namespace: chuka-cribs
+  labels:
+    app: chuka-cribs
+    component: configuration
+data:
+  NODE_ENV: production
+  PORT: "3000"
+  HOST: "0.0.0.0"
+  
+  # Database (MongoDB)
+  # MONGODB_URI is in Secret
+  MONGODB_MAX_POOL_SIZE: "100"
+  MONGODB_MIN_POOL_SIZE: "10"
+  MONGODB_SOCKET_TIMEOUT_MS: "45000"
+  MONGODB_SERVER_TIMEOUT_MS: "20000"
+  
+  # Logging
+  LOG_LEVEL: info
+  LOG_FORMAT: json
+  
+  # Security
+  CORS_ORIGINS: "https://chukacribs.com,https://app.chukacribs.com"
+  RATE_LIMIT_WINDOW_MS: "900000"
+  RATE_LIMIT_MAX_REQUESTS: "100"
+  
+  # Features
+  PAYMENT_ENABLED: "true"
+  SMS_NOTIFICATIONS_ENABLED: "true"
+  EMAIL_NOTIFICATIONS_ENABLED: "true"
+  
+  # API
+  API_TIMEOUT_MS: "30000"
+  API_RATE_LIMIT: "100"
+  
+  # Cache
+  REDIS_MAX_RETRIES: "3"
+  REDIS_RETRY_DELAY_MS: "100"
+  
+  # Session
+  SESSION_TIMEOUT_MS: "3600000"
+  SESSION_REFRESH_THRESHOLD_MS: "600000"
+  
+  # Upload
+  MAX_FILE_SIZE: "52428800"
+  ALLOWED_FILE_TYPES: "jpg,jpeg,png,pdf,doc,docx"
+  
+  # Deployment
+  ENVIRONMENT: production
+  VERSION: "1.0.0"
+  DEPLOYED_AT: "2026-02-07T00:00:00Z"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chuka-cribs-app-config
+  namespace: chuka-cribs
+  labels:
+    app: chuka-cribs
+    component: application
+data:
+  app.json: |
+    {
+      "name": "ChukaCribs",
+      "version": "1.0.0",
+      "description": "Student accommodation platform for Chuka",
+      "features": {
+        "houseListing": true,
+        "bookingSystem": true,
+        "paymentProcessing": true,
+        "smsNotifications": true,
+        "emailNotifications": true,
+        "landlordPortal": true,
+        "studentDashboard": true,
+        "reviewAndRatings": true,
+        "favoritesList": true
+      },
+      "security": {
+        "https": true,
+        "csrfProtection": true,
+        "rateLimiting": true,
+        "inputValidation": true,
+        "xssProtection": true
+      },
+      "support": {
+        "email": "support@chukacribs.com",
+        "phone": "+254712345678"
+      }
+    }

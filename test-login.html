@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login/Register</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        button { padding: 10px; margin: 5px; }
+        .output { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>ChukaCribs Login/Register Test</h1>
+    
+    <h2>Register New Landlord</h2>
+    <button onclick="registerLandlord()">Create Test Landlord</button>
+    
+    <h2>Login Test</h2>
+    <button onclick="loginLandlord()">Login Test Landlord</button>
+    
+    <h2>Response Output</h2>
+    <div class="output" id="output"></div>
+
+    <script>
+        async function registerLandlord() {
+            const data = {
+                name: "Test Landlord",
+                email: "test@landlord.com",
+                password: "password123",
+                phone: "0712345678",
+                idNumber: "ID12345678"
+            };
+            
+            try {
+                const response = await fetch("http://localhost:3000/api/auth/register", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                document.getElementById("output").innerHTML = `<pre>
+Status: ${response.status}
+Response: ${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (err) {
+                document.getElementById("output").innerHTML = `<pre>Error: ${err.message}</pre>`;
+            }
+        }
+
+        async function loginLandlord() {
+            const data = {
+                email: "test@landlord.com",
+                password: "password123"
+            };
+            
+            try {
+                const response = await fetch("http://localhost:3000/api/auth/login", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                document.getElementById("output").innerHTML = `<pre>
+Status: ${response.status}
+Response: ${JSON.stringify(result, null, 2)}
+
+Cookies: ${document.cookie}</pre>`;
+                
+                if (response.ok) {
+                    alert("✅ Login successful! Check the cookies in DevTools.");
+                }
+            } catch (err) {
+                document.getElementById("output").innerHTML = `<pre>Error: ${err.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+/* override decorative floating elements to remove distractions */
+.floating-star, .floating-house, .decorative, .sparkle, .particle { display: none !important; }
+
+/* ensure CTA contrast and accessible color fallback */
+.cta-button { color: var(--navy); background-color: var(--gold); }
+.cta-button[disabled], .cta-button.disabled { opacity: 0.6; cursor: not-allowed; }

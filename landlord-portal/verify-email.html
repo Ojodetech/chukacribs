@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying Email - ChukaCribs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/landlord-portal/css/verify-email.css">
+</head>
+<body>
+    <div class="container">
+        <div class="logo">ChukaCribs</div>
+        <div class="logo-subtitle">Student Accommodation Platform</div>
+        
+        <div id="loading">
+            <div class="loading-spinner"></div>
+            <p class="status-message">Verifying your email...</p>
+            <p class="info-text">Please wait while we confirm your email address</p>
+        </div>
+
+        <div id="success" class="hidden">
+            <div class="success-message">
+                ✅ Email Verified Successfully!
+            </div>
+            <h2>Welcome! 🎉</h2>
+            <p class="status-message">
+                Your email has been verified successfully. You can now log in to your landlord account and start listing your properties.
+            </p>
+            <button class="btn check-email-button" data-action="go-to-login-verify">
+                🔐 Go to Login
+            </button>
+            <p class="info-text">
+                You will be redirected automatically in a few seconds...
+            </p>
+        </div>
+
+        <div id="error" class="hidden">
+            <div class="error-message">
+                ❌ <span id="errorMessage">Verification failed</span>
+            </div>
+            <h2>Verification Failed</h2>
+            <p class="status-message" id="errorDetails">
+                The verification link appears to be invalid or has expired.
+            </p>
+            <div class="actions">
+                <button class="btn btn-primary" data-action="register-again">
+                    ← Register Again
+                </button>
+                <button class="btn btn-secondary" data-action="go-to-login">
+                    🔐 Go to Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- External Script - CSP Compliant -->
+    <script src="/landlord-portal/js/verify-email.js"></script>
+</body>
+</html>

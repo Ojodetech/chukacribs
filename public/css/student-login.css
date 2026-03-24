@@ -1,0 +1,50 @@
+/* Styles for Student Login page (extracted from inline <style> for CSP compliance) */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+.login-container{
+    background:white;
+    border-radius:10px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+    max-width:400px;
+    width:100%;
+    padding:40px;
+    animation:slideUp 0.6s ease-out;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.logo{text-align:center;margin-bottom:30px}
+.logo h1{color:#667eea;font-size:28px;margin-bottom:5px}
+.logo p{color:#999;font-size:13px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;margin-bottom:8px;color:#333;font-weight:500;font-size:14px}
+.form-group input{width:100%;padding:12px;border:1px solid #ddd;border-radius:5px;font-size:14px;transition:border-color 0.3s}
+.form-group input:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.1)}
+.remember-forgot{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:13px}
+.remember-forgot a{color:#667eea;text-decoration:none;transition:color 0.3s}
+.remember-forgot a:hover{color:#764ba2}
+.btn-login{width:100%;padding:12px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:5px;font-size:15px;font-weight:600;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(102,126,234,0.4)}
+.btn-login:disabled{opacity:0.6;cursor:not-allowed}
+.divider{text-align:center;margin:20px 0;color:#999;font-size:13px}
+.signup-link{text-align:center;margin-top:20px;font-size:14px;color:#666}
+.signup-link a{color:#667eea;text-decoration:none;font-weight:600;transition:color 0.3s}
+.signup-link a:hover{color:#764ba2}
+.error-message{background-color:#f8d7da;color:#721c24;padding:12px;border-radius:5px;margin-bottom:20px;font-size:13px;display:none}
+.error-message.show{display:block;animation:shake 0.5s}
+.success-message{background-color:#d4edda;color:#155724;padding:12px;border-radius:5px;margin-bottom:20px;font-size:13px;display:none}
+.success-message.show{display:block}
+.back-to-home{text-align:center;margin-top:20px}
+.back-to-home a{color:#667eea;text-decoration:none;font-size:13px;transition:color 0.3s}
+.back-to-home a:hover{color:#764ba2}
+@media (max-width:480px){.login-container{padding:30px 20px}.logo h1{font-size:24px}}

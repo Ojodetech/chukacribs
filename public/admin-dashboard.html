@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Chuka Cribs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="/" class="nav-logo">🏠 Chuka Cribs Admin</a>
+        <ul class="nav-menu">
+            <li><a href="/admin-dashboard.html">Dashboard</a></li>
+            <li><a href="/admin-panel.html">Properties</a></li>
+            <li><a href="/" target="_blank">View Site</a></li>
+            <li><a href="#" id="navLogoutLink">Logout</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="content">
+            <!-- Hero Section -->
+            <div class="hero">
+                <h1>👑 Admin Control Center</h1>
+                <p>Manage properties, review listings, and maintain your platform with ease</p>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Properties Card -->
+                <div class="dashboard-card">
+                    <div class="card-icon">📋</div>
+                    <h3 class="card-title">Property Management</h3>
+                    <p class="card-description">Review and approve pending property listings from landlords</p>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <span class="stat-label">Pending Properties:</span>
+                            <span class="stat-value" id="pendingCount">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Status:</span>
+                            <span class="stat-value" id="statusBadge">Loading...</span>
+                        </div>
+                    </div>
+                    <button class="card-button" id="reviewPropertiesBtn">📊 Review Properties</button>
+                </div>
+
+                <!-- Statistics Card -->
+                <div class="dashboard-card">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Statistics</h3>
+                    <p class="card-description">View comprehensive platform statistics and analytics</p>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <span class="stat-label">Total Listings:</span>
+                            <span class="stat-value" id="totalListings">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Approved:</span>
+                            <span class="stat-value" id="approvedCount">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Active Bookings:</span>
+                            <span class="stat-value" id="bookingCount">0</span>
+                        </div>
+                    </div>
+                    <button class="card-button" id="viewStatsBtn">📈 View Details</button>
+                </div>
+
+                <!-- System Settings Card -->
+                <div class="dashboard-card">
+                    <div class="card-icon">⚙️</div>
+                    <h3 class="card-title">System Settings</h3>
+                    <p class="card-description">Configure platform settings and manage system preferences</p>
+                    <div class="card-stats">
+                        <div class="stat">
+                            <span class="stat-label">Server Status:</span>
+                            <span class="stat-value status-active" id="serverStatus">Online</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Database:</span>
+                            <span class="stat-value status-active" id="dbStatus">Connected</span>
+                        </div>
+                    </div>
+                    <button class="card-button secondary" id="openSettingsBtn">⚙️ Configuration</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Chuka Cribs. All rights reserved. Admin Panel v2.0</p>
+    </footer>
+
+    <!-- Message Container -->
+    <div class="message-container" id="messageContainer"></div>
+
+    <!-- Logout Modal -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <h3>🚪 Logout</h3>
+            <p>Are you sure you want to logout? You'll need to authenticate again to access the admin panel.</p>
+            <div class="modal-buttons">
+                <button class="confirm" id="confirmLogoutBtn">Logout</button>
+                <button class="cancel" id="cancelLogoutBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/error-manager.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

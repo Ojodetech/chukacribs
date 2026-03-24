@@ -1,0 +1,114 @@
+{
+  "name": "ChukaCribs - Student Accommodation",
+  "short_name": "ChukaCribs",
+  "description": "Find your perfect student accommodation at Chuka University with verified listings and instant booking",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#0B1F3B",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/images/Icon1.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/screenshot-540x720.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/images/screenshot-1080x1440.png",
+      "sizes": "1080x1440",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/images/screenshot-1024x768.png",
+      "sizes": "1024x768",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "categories": ["lifestyle", "productivity", "real-estate"],
+  "shortcuts": [
+    {
+      "name": "Browse Properties",
+      "short_name": "Browse",
+      "description": "Search and browse available accommodations",
+      "url": "/listings?source=pwa-shortcut",
+      "icons": [
+        {
+          "src": "/images/search-icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "My Bookings",
+      "short_name": "Bookings",
+      "description": "View and manage your bookings",
+      "url": "/landlord-portal/landlord-dashboard.html?source=pwa-shortcut",
+      "icons": [
+        {
+          "src": "/images/booking-icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Landlord Portal",
+      "short_name": "Landlord",
+      "description": "Access landlord dashboard",
+      "url": "/landlord-portal/landlord-login.html?source=pwa-shortcut",
+      "icons": [
+        {
+          "src": "/images/landlord-icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/api/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "media",
+          "accept": ["image/*", "video/*"]
+        }
+      ]
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "/api/upload",
+      "accept": {
+        "image/*": [".jpg", ".jpeg", ".png", ".gif", ".webp"],
+        "video/*": [".mp4", ".webm", ".mov"]
+      },
+      "launch_type": "single-client"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+chukacribs",
+      "url": "/share?url=%s"
+    }
+  ]
+}

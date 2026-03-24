@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="50" fill="#667eea"/>
+  
+  <!-- House shape -->
+  <g transform="translate(50, 50)">
+    <!-- Roof -->
+    <polygon points="0,-20 -25,5 25,5" fill="#764ba2"/>
+    
+    <!-- House body -->
+    <rect x="-20" y="5" width="40" height="25" fill="#fff" stroke="#667eea" stroke-width="2"/>
+    
+    <!-- Door -->
+    <rect x="-6" y="20" width="12" height="15" fill="#764ba2"/>
+    <circle cx="-2" cy="27" r="1.5" fill="#ffd700"/>
+    
+    <!-- Left window -->
+    <rect x="-16" y="10" width="8" height="8" fill="#87ceeb" stroke="#667eea" stroke-width="1"/>
+    <line x1="-12" y1="10" x2="-12" y2="18" stroke="#667eea" stroke-width="1"/>
+    <line x1="-16" y1="14" x2="-8" y2="14" stroke="#667eea" stroke-width="1"/>
+    
+    <!-- Right window -->
+    <rect x="8" y="10" width="8" height="8" fill="#87ceeb" stroke="#667eea" stroke-width="1"/>
+    <line x1="12" y1="10" x2="12" y2="18" stroke="#667eea" stroke-width="1"/>
+    <line x1="8" y1="14" x2="16" y2="14" stroke="#667eea" stroke-width="1"/>
+  </g>
+</svg>

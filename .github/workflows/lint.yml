@@ -1,0 +1,130 @@
+name: Lint & Format
+
+on:
+  push:
+    branches: [ main, develop, staging ]
+    paths:
+      - '**.js'
+      - 'package.json'
+      - '.eslintrc.json'
+      - '.prettierrc.json'
+  pull_request:
+    branches: [ main, develop, staging ]
+    paths:
+      - '**.js'
+      - 'package.json'
+      - '.eslintrc.json'
+      - '.prettierrc.json'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint -- --format=json --output-file=eslint-report.json
+        continue-on-error: true
+
+      - name: Check code formatting with Prettier
+        run: npm run format:check
+        continue-on-error: true
+
+      - name: Parse ESLint results
+        if: always()
+        run: |
+          if [ -f eslint-report.json ]; then
+            echo "## ESLint Results" >> $GITHUB_STEP_SUMMARY
+            node -e "
+              const report = require('./eslint-report.json');
+              const errors = report.reduce((sum, f) => sum + f.errorCount, 0);
+              const warnings = report.reduce((sum, f) => sum + f.warningCount, 0);
+              console.log(\`- Errors: \${errors}\`);
+              console.log(\`- Warnings: \${warnings}\`);
+              console.log('');
+              report.forEach(f => {
+                if (f.messages.length) {
+                  console.log(\`### \${f.filePath}\`);
+                  f.messages.forEach(m => {
+                    const severity = m.severity === 1 ? '⚠️' : '❌';
+                    console.log(\`\${severity} Line \${m.line}: \${m.message}\`);
+                  });
+                }
+              });
+            " >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload linting reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: lint-reports
+          path: |
+            eslint-report.json
+          retention-days: 30
+
+      - name: Comment PR with linting issues
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let comment = `## Code Quality Check\n\n`;
+            
+            if (fs.existsSync('./eslint-report.json')) {
+              const report = JSON.parse(fs.readFileSync('./eslint-report.json', 'utf8'));
+              const errors = report.reduce((sum, f) => sum + f.errorCount, 0);
+              const warnings = report.reduce((sum, f) => sum + f.warningCount, 0);
+              
+              if (errors === 0 && warnings === 0) {
+                comment += '✅ **Linting**: No issues found\n\n';
+              } else {
+                comment += `⚠️ **Linting**: ${errors} errors, ${warnings} warnings\n\n`;
+                comment += '```\n';
+                report.forEach(f => {
+                  if (f.messages.length) {
+                    comment += `${f.filePath}:\n`;
+                    f.messages.forEach(m => {
+                      const severity = m.severity === 1 ? 'WARN' : 'ERROR';
+                      comment += `  Line ${m.line}: [${severity}] ${m.message}\n`;
+                    });
+                  }
+                });
+                comment += '```\n\n';
+              }
+            }
+            
+            comment += '**Formatter Check**: Run `npm run format:check` locally\n';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  quality-gate:
+    needs: lint
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Check quality
+        run: |
+          echo "📊 Code Quality Gate"
+          echo "✅ Linting complete"
+          echo "📋 Recommended fixes: npm run lint:fix && npm run format"

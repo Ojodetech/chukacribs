@@ -1,0 +1,244 @@
+name: Docker Build & Deploy
+
+on:
+  push:
+    branches: [ main, develop, staging ]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+      - 'package*.json'
+      - 'config/**'
+      - 'routes/**'
+      - 'models/**'
+      - 'index.js'
+  pull_request:
+    branches: [ main, develop, staging ]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.dockerignore'
+      - 'package*.json'
+      - 'config/**'
+      - 'routes/**'
+      - 'models/**'
+      - 'index.js'
+  workflow_dispatch:
+    inputs:
+      push_image:
+        description: 'Push image to registry'
+        required: false
+        default: 'false'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          outputs: type=docker
+
+      - name: Docker Scout - Vulnerability Scan
+        id: scout
+        uses: docker/scout-action@v1
+        continue-on-error: true
+        with:
+          command: cves
+          image: ${{ steps.meta.outputs.tags }}
+          sarif: scout-results.sarif
+
+      - name: Upload Scout SARIF
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif-file: scout-results.sarif
+          category: docker-scout
+
+      - name: Test Docker image
+        run: |
+          echo "🧪 Testing Docker image..."
+          
+          # Load image
+          docker load --input ${{ steps.build.outputs.dockerfile }}
+          
+          # Run basic checks
+          echo "✅ Image built successfully"
+          echo "📦 Image size: $(docker image ls --format='{{.Size}}' ${{ steps.meta.outputs.tags }})"
+
+      - name: Generate SBOM (Software Bill of Materials)
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ steps.meta.outputs.tags }}
+          format: spdx-json
+          output-file: sbom-spdx.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v3
+        with:
+          name: sbom-report
+          path: sbom-spdx.json
+          retention-days: 30
+
+      - name: Comment PR with Docker info
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = `## Docker Build Status
+            
+✅ **Docker Image Built Successfully**
+
+**Image Tags:**
+\`\`\`
+${{ steps.meta.outputs.tags }}
+\`\`\`
+
+**Branch:** ${{ github.ref_name }}
+**Commit:** \`${{ github.sha }}\`
+
+**Status:** 
+- ✅ Build completed
+- 📋 Image ready for testing
+- 🔍 Vulnerability scan: Check security tab
+
+**Next Steps for Deployment:**
+1. Push image: \`npm run docker:push\`
+2. Deploy to staging: See CI/CD documentation
+3. Deploy to production: Requires approval
+
+For security vulnerabilities, see the "Security" tab of this PR.
+`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  test-image:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image for testing
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          load: true
+          tags: chuka-cribs:test
+
+      - name: Run container
+        run: |
+          docker run --rm \
+            -e NODE_ENV=test \
+            -e MONGODB_URI=mongodb://test:test@localhost:27017/test \
+            -e JWT_SECRET=test-secret-key-very-long-for-testing-purposes-only \
+            -e ADMIN_SECRET_KEY=test-admin-key-very-long \
+            chuka-cribs:test \
+            sh -c 'npm run lint:fix 2>&1 | head -50'
+        continue-on-error: true
+
+  security-scan:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif-file: trivy-results.sarif
+          category: trivy
+
+  notify:
+    needs: [ build, test-image ]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Docker Build Status
+        run: |
+          echo "## Docker Build Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.build.result }}" == "success" ]; then
+            echo "✅ **Build Status**: SUCCESS" >> $GITHUB_STEP_SUMMARY
+            echo "🔗 **Image**: \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Build Status**: FAILED" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Artifacts Generated:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Docker image pushed to container registry" >> $GITHUB_STEP_SUMMARY
+          echo "- SBOM (Software Bill of Materials) generated" >> $GITHUB_STEP_SUMMARY
+          echo "- Vulnerability scans completed" >> $GITHUB_STEP_SUMMARY

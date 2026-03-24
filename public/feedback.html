@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ChukaCribs - Feedback</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Feedback</h1>
+      <p><a href="/" class="back-link">&larr; Back to home</a></p>
+    </header>
+
+    <main>
+      <form id="feedbackForm" class="payment-form">
+        <h2>Tell us about your experience</h2>
+        <label for="name">Name</label>
+        <input id="name" name="name" required>
+
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required>
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="6" required></textarea>
+
+        <label for="rating">Rating (optional)</label>
+        <select id="rating" name="rating">
+          <option value="">-- choose --</option>
+          <option value="5">5 - Excellent</option>
+          <option value="4">4 - Good</option>
+          <option value="3">3 - Okay</option>
+          <option value="2">2 - Poor</option>
+          <option value="1">1 - Very Poor</option>
+        </select>
+
+        <button type="submit">Send Feedback</button>
+      </form>
+
+      <section id="feedbackMessage" style="margin-top:20px"></section>
+    </main>
+  </div>
+
+  <script src="js/loading.js"></script>
+  <script src="js/error-manager.js"></script>
+  <script src="js/feedback.js"></script>
+</body>
+</html>
