@@ -76,8 +76,8 @@ router.get('/:paymentId', asyncHandler(async (req, res) => {
   res.json({ success: true, data: payment });
 }));
 
-// Record payment
-router.post('/record', authenticateStudent, body('bookingId').notEmpty(), body('amount').isFloat({ min: 0 }), body('paymentMethod').isIn(['M-Pesa', 'PesaPal', 'Bank Transfer', 'Card', 'Cash']), body('transactionId').notEmpty(), asyncHandler(async (req, res) => {
+// Record payment - M-PESA ONLY
+router.post('/record', authenticateStudent, body('bookingId').notEmpty(), body('amount').isFloat({ min: 0 }), body('paymentMethod').isIn(['M-Pesa']), body('transactionId').notEmpty(), asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {return res.status(400).json({ success: false, errors: errors.array() });}
 

@@ -37,6 +37,10 @@ const paymentsHistoryRouter = require('./routes/payments-history-fixed');
 const ratingsRouter = require('./routes/ratings');
 const analyticsRouter = require('./routes/analytics');
 const adminRouter = require('./routes/admin');
+const coreUserRouter = require('./routes/core-users');
+const coreRoomRouter = require('./routes/core-rooms');
+const coreBookingRouter = require('./routes/core-booking');
+const corePaymentRouter = require('./routes/core-payment');
 const { translate } = require('./config/languages');
 const logger = require('./config/logger');
 const { requestLoggingMiddleware, globalLogger } = require('./config/structured-logger');
@@ -545,6 +549,14 @@ app.use('/api/payments-history', paymentsHistoryRouter);
 app.use('/api/ratings', ratingsRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/admin', adminRouter);
+
+// ============================================================================
+// 🧠 CORE BUSINESS SYSTEM - Rental operation core
+// ============================================================================
+app.use('/api/core', coreUserRouter);
+app.use('/api/core', coreRoomRouter);
+app.use('/api/core', coreBookingRouter);
+app.use('/api/core', corePaymentRouter);
 
 // ============================================================================
 // ITEM #7: LOG AGGREGATION - Admin endpoints for log management
