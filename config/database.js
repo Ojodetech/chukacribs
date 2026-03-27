@@ -31,9 +31,8 @@ const connectDB = async () => {
       readPreference: 'primary',
       monitorCommands: true,
       heartbeatFrequencyMS: 30000,
-      maxStalenessSeconds: 90,
-      useNewUrlParser: true,
-      useUnifiedTopology: true
+      maxStalenessSeconds: 90
+      // Removed deprecated options: useNewUrlParser and useUnifiedTopology (default in Mongoose 6+)
     };
 
     console.log(`🔄 Connecting to MongoDB (${mongoURI.split('@')[1] || 'local'})...`);

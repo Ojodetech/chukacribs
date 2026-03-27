@@ -2,10 +2,7 @@ const mongoose = require('mongoose');
 
 const connectCoreDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/chuka-cribs', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+        await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/chuka-cribs');
         console.log('✅ MongoDB Connected');
         return mongoose.connection;
     } catch (err) {
