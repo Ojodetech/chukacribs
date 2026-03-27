@@ -2,9 +2,9 @@
   "name": "ChukaCribs",
   "version": "1.0.0",
   "description": "A student-focused accommodation website for Chuka.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node server.js",
     "dev": "nodemon index.js",
     "seed": "node scripts/seedDatabase.js",
     "backup:create": "node scripts/backupDatabase.js",
