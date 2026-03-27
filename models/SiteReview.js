@@ -5,7 +5,7 @@ const siteReviewSchema = new mongoose.Schema({
   email: { type: String, required: true, trim: true, maxlength: 200 },
   message: { type: String, required: true, trim: true, maxlength: 2000 },
   rating: { type: Number, min: 1, max: 5 },
-  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending', index: true },
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   approvedAt: Date,
   createdAt: { type: Date, default: Date.now }
 }, { timestamps: true });

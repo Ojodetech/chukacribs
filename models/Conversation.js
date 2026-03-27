@@ -5,19 +5,16 @@ const conversationSchema = new mongoose.Schema(
     studentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Student',
-      required: true,
-      index: true
+      required: true
     },
     landlordId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Landlord',
-      required: true,
-      index: true
+      required: true
     },
     houseId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'House',
-      index: true
+      ref: 'House'
     },
     subject: {
       type: String,
@@ -27,8 +24,7 @@ const conversationSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ['active', 'archived', 'closed'],
-      default: 'active',
-      index: true
+      default: 'active'
     },
     lastMessage: {
       type: mongoose.Schema.Types.ObjectId,
@@ -36,8 +32,7 @@ const conversationSchema = new mongoose.Schema(
     },
     lastMessageAt: {
       type: Date,
-      default: Date.now,
-      index: true
+      default: Date.now
     },
     lastMessageContent: String,
     lastMessageSender: String,
@@ -55,8 +50,7 @@ const conversationSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-      index: true
+      default: Date.now
     },
     updatedAt: {
       type: Date,

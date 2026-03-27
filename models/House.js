@@ -10,8 +10,7 @@ const houseSchema = new mongoose.Schema(
     location: {
       type: String,
       required: true,
-      trim: true,
-      index: true
+      trim: true
     },
     price: {
       type: Number,

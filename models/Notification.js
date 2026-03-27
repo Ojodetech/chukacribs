@@ -4,8 +4,7 @@ const notificationSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      index: true
+      required: true
     },
     userType: {
       type: String,
@@ -31,8 +30,7 @@ const notificationSchema = new mongoose.Schema(
     },
     isRead: {
       type: Boolean,
-      default: false,
-      index: true
+      default: false
     },
     readAt: Date,
     
@@ -73,8 +71,7 @@ const notificationSchema = new mongoose.Schema(
     
     createdAt: {
       type: Date,
-      default: Date.now,
-      index: true
+      default: Date.now
     }
   },
   { timestamps: true }

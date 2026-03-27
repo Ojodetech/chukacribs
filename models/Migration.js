@@ -6,7 +6,6 @@ const migrationSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      index: true,
       description: 'Unique name of the migration file (timestamp_description)'
     },
     version: {
@@ -31,8 +30,7 @@ const migrationSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ['pending', 'completed', 'failed', 'rolled_back'],
-      default: 'completed',
-      index: true
+      default: 'completed'
     },
     error: {
       type: String,

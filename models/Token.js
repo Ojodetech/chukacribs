@@ -5,15 +5,13 @@ const tokenSchema = new mongoose.Schema(
     // Identification
     referenceId: {
       type: String,
-      sparse: true,
-      index: true
+      sparse: true
     },
     
     // PesaPal specific
     orderTrackingId: {
       type: String,
-      sparse: true,
-      index: true
+      sparse: true
     },
     transactionId: {
       type: String,
@@ -25,15 +23,13 @@ const tokenSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      trim: true,
-      index: true
+      trim: true
     },
     // User information
     phoneNumber: {
       type: String,
       required: true,
-      trim: true,
-      index: true
+      trim: true
     },
     email: {
       type: String,
@@ -55,8 +51,7 @@ const tokenSchema = new mongoose.Schema(
     paymentStatus: {
       type: String,
       enum: ['pending', 'completed', 'failed', 'cancelled'],
-      default: 'pending',
-      index: true
+      default: 'pending'
     },
     paymentGateway: {
       type: String,
@@ -73,13 +68,11 @@ const tokenSchema = new mongoose.Schema(
     // Token usage and locking (for atomic token consumption in concurrent booking flows)
     isUsed: {
       type: Boolean,
-      default: false,
-      index: true
+      default: false
     },
     isLocked: {
       type: Boolean,
-      default: false,
-      index: true
+      default: false
     },
     lockExpiresAt: {
       type: Date,
@@ -102,6 +95,12 @@ const tokenSchema = new mongoose.Schema(
 
 // TTL Index to automatically delete expired tokens after expiration
 tokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
+// Indexes for efficient queries (remove duplicates with field-level options)
+tokenSchema.index({ phoneNumber: 1 });
+tokenSchema.index({ paymentStatus: 1 });
+tokenSchema.index({ isUsed: 1 });
+tokenSchema.index({ isLocked: 1 });
 
 /**
  * Atomically reserve a token for processing

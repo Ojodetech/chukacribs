@@ -5,19 +5,16 @@ const reviewSchema = new mongoose.Schema(
     houseId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'House',
-      required: true,
-      index: true
+      required: true
     },
     studentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Student',
-      required: true,
-      index: true
+      required: true
     },
     landlordId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Landlord',
-      index: true
+      ref: 'Landlord'
     },
     rating: {
       type: Number,

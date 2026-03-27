@@ -36,7 +36,6 @@ const studentSchema = new mongoose.Schema(
     // Academic Info
     studentId: {
       type: String,
-      sparse: true,
       trim: true
     },
     university: {

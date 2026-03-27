@@ -5,13 +5,11 @@ const messageSchema = new mongoose.Schema(
     conversationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Conversation',
-      required: true,
-      index: true
+      required: true
     },
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      index: true
+      required: true
     },
     senderType: {
       type: String,
@@ -20,8 +18,7 @@ const messageSchema = new mongoose.Schema(
     },
     receiverId: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      index: true
+      required: true
     },
     receiverType: {
       type: String,
@@ -47,8 +44,7 @@ const messageSchema = new mongoose.Schema(
     }],
     read: {
       type: Boolean,
-      default: false,
-      index: true
+      default: false
     },
     readAt: Date,
     deleted: {
@@ -62,8 +58,7 @@ const messageSchema = new mongoose.Schema(
     editedAt: Date,
     createdAt: {
       type: Date,
-      default: Date.now,
-      index: true
+      default: Date.now
     }
   },
   { timestamps: true }
