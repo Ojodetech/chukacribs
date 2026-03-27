@@ -468,85 +468,22 @@ const initializeApp = async () => {
 module.exports = app;
 
 // Start HTTP server with graceful shutdown (static port only)
-const startServer = () => {
-  console.log(`🔍 Binding to PORT: ${PORT}, process.env.PORT: ${process.env.PORT}`);
-  const server = app.listen(PORT, () => {
-    logger.info(`🏠 ChukaCribs server running on http://localhost:${PORT}`);
-    globalLogger.info('✅ Server started successfully', {
-      port: PORT,
-      host: '0.0.0.0',
-      nodeEnv: process.env.NODE_ENV,
-      uptime: process.uptime()
-    });
-    console.log(`\n🏠 ChukaCribs server is running on http://localhost:${PORT}`);
-    console.log(`📡 API endpoint: http://localhost:${PORT}/api/houses`);
-    console.log(`🏪 Landlord Portal: http://localhost:${PORT}/landlord-login`);
-    console.log(`💚 Visit the website and explore available houses!\n`);
+const HOST = '0.0.0.0';
+
+const server = app.listen(PORT, HOST, () => {
+  logger.info(`🏠 ChukaCribs server running on port ${PORT}`);
+  globalLogger.info('✅ Server started successfully', {
+    port: PORT,
+    host: HOST,
+    nodeEnv: process.env.NODE_ENV,
+    uptime: process.uptime()
   });
 
-  server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      const errorMsg = `Port ${PORT} is already in use; Render expects this port.`;
-      logger.error(errorMsg);
-      globalLogger.error(errorMsg);
-      console.error(`❌ ${errorMsg}`);
-      process.exit(1);
-    }
-
-    logger.error('Server error:', err);
-    globalLogger.error('Server error', { error: err.message, code: err.code });
-    console.error('❌ Server error:', err.message);
-
-    server.close(async () => {
-      try {
-        const mongoose = require('mongoose');
-        if (mongoose.connection.readyState === 1) {
-          await mongoose.connection.close();
-        }
-      } catch (closeErr) {
-        // ignore
-      }
-      setTimeout(() => process.exit(1), 1000);
-    });
-  });
-
-  const gracefulShutdown = async (signal) => {
-    console.log(`\n${signal} received, gracefully shutting down...`);
-    globalLogger.info(`Shutdown signal received: ${signal}`);
-
-    server.close(async () => {
-      try {
-        const mongoose = require('mongoose');
-        if (mongoose.connection.readyState === 1) {
-          await mongoose.connection.close();
-          globalLogger.info('Database connection closed');
-          console.log('✅ Database connection closed');
-        }
-      } catch (err) {
-        globalLogger.error('Error closing database', { error: err.message });
-        console.error('Error closing database:', err.message);
-      }
-
-      try {
-        globalLogger.close();
-      } catch (err) {
-        // ignore
-      }
-
-      console.log('✅ Server shutdown complete');
-      globalLogger.info('Server shutdown complete');
-      process.exit(0);
-    });
-
-    setTimeout(() => {
-      console.error('⚠️  Forcing shutdown after timeout');
-      process.exit(1);
-    }, 10000);
-  };
-
-  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-};
+  console.log(`\n🏠 ChukaCribs server is running on port ${PORT}`);
+  console.log(`📡 API endpoint: /api/houses`);
+  console.log(`🏪 Landlord Portal: /landlord-login`);
+  console.log(`💚 Visit the website and explore available houses!\n`);
+});
 
 // Start server immediately for platforms like Render that expect immediate port binding
 if (process.env.NODE_ENV !== 'test') {
