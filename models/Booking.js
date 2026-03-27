@@ -37,8 +37,7 @@ const bookingSchema = new mongoose.Schema(
     },
     expiresAt: {
       type: Date,
-      default: () => new Date(Date.now() + EXPIRATION_TIME_MS),
-      index: true
+      default: () => new Date(Date.now() + EXPIRATION_TIME_MS)
     },
     status: {
       type: String,

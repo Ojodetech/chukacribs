@@ -38,8 +38,7 @@ const paymentHistorySchema = new mongoose.Schema(
     },
     transactionId: {
       type: String,
-      required: true,
-      unique: true,
+      required: true
     },
     status: {
       type: String,

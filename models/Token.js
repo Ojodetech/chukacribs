@@ -88,8 +88,7 @@ const tokenSchema = new mongoose.Schema(
     // Timestamps
     expiresAt: {
       type: Date,
-      required: true,
-      index: true
+      required: true
     },
     createdAt: {
       type: Date,

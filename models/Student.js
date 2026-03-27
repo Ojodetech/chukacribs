@@ -17,7 +17,6 @@ const studentSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
       trim: true,
       match: /.+\@.+\..+/
@@ -37,7 +36,6 @@ const studentSchema = new mongoose.Schema(
     // Academic Info
     studentId: {
       type: String,
-      unique: true,
       sparse: true,
       trim: true
     },
@@ -274,8 +272,8 @@ studentSchema.methods.getPublicProfile = function() {
 };
 
 // Index for email lookup
-studentSchema.index({ email: 1 });
-studentSchema.index({ studentId: 1 });
+studentSchema.index({ email: 1 }, { unique: true });
+studentSchema.index({ studentId: 1 }, { unique: true, sparse: true });
 studentSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Student', studentSchema);
