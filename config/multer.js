@@ -126,7 +126,7 @@ async function optimizeImage(filePath, options = {}) {
             maxWidth = 1920,
             maxHeight = 1080,
             quality = 80,
-            format = 'webp' // Use modern format
+            format = 'jpeg' // Use JPEG format to avoid Snappy dependency issues
         } = options;
 
         const outputPath = filePath.replace(/\.[^.]+$/, `.${format}`);
@@ -172,7 +172,7 @@ async function generateVideoThumbnail(videoPath, options = {}) {
 
         const thumbnailPath = path.join(
             thumbnailsDir,
-            `thumb-${  Date.now()  }.webp`
+            `thumb-${  Date.now()  }.jpg`
         );
 
         ffmpeg(videoPath)
@@ -186,7 +186,7 @@ async function generateVideoThumbnail(videoPath, options = {}) {
             .on('end', () => {
                 // Optimize thumbnail
                 sharp(path.join(path.dirname(thumbnailPath), path.basename(thumbnailPath)))
-                    .webp({ quality: 60 })
+                    .jpeg({ quality: 60 })
                     .toFile(thumbnailPath)
                     .then(() => resolve(thumbnailPath))
                     .catch(reject);

@@ -117,7 +117,7 @@ router.post('/properties/:id/media', authenticateLandlord, upload.fields([{ name
     const imageFiles = (req.files && req.files.images) || [];
     for (const file of imageFiles) {
       try {
-        const optimized = await optimizeImage(file.path, { format: 'webp', quality: 80 });
+        const optimized = await optimizeImage(file.path, { format: 'jpeg', quality: 80 });
         // Store relative path for serving (assumes static serving of /uploads)
         savedImages.push(`/uploads/images/${path.basename(optimized)}`);
       } catch (err) {
