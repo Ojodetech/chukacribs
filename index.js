@@ -75,7 +75,6 @@ const instances = [];  // Registry of application instances
 
 const app = express();
 const PORT = parseInt(process.env.PORT, 10) || 3000;
-const HOST = '0.0.0.0';
 
 // ============================================================================
 // ENVIRONMENT VALIDATION - FAIL FAST IF REQUIRED VARS ARE MISSING
@@ -470,11 +469,12 @@ module.exports = app;
 
 // Start HTTP server with graceful shutdown (static port only)
 const startServer = () => {
-  const server = app.listen(PORT, HOST, () => {
+  console.log(`🔍 Binding to PORT: ${PORT}, process.env.PORT: ${process.env.PORT}`);
+  const server = app.listen(PORT, () => {
     logger.info(`🏠 ChukaCribs server running on http://localhost:${PORT}`);
     globalLogger.info('✅ Server started successfully', {
       port: PORT,
-      host: HOST,
+      host: '0.0.0.0',
       nodeEnv: process.env.NODE_ENV,
       uptime: process.uptime()
     });
