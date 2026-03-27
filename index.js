@@ -74,8 +74,8 @@ let autoScaler = null;
 const instances = [];  // Registry of application instances
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || '0.0.0.0';
+const PORT = parseInt(process.env.PORT, 10) || 3000;
+const HOST = '0.0.0.0';
 
 // ============================================================================
 // ENVIRONMENT VALIDATION - FAIL FAST IF REQUIRED VARS ARE MISSING
@@ -409,9 +409,11 @@ const initializeApp = async () => {
       globalLogger.warn('Load Balancer failed', { error: error.message });
     }
     
-    // NOW start the server (DB is ready or we've confirmed it's unavailable)
-    console.log('🚀 Step 2: Starting HTTP server...');
-    startServer();
+    // ==============================================================
+    // ITEM #2 (in initializeApp): db and services are initialized.
+    // Server is started from top-level bootstrap for Render.
+    // ==============================================================
+    console.log('✅ Step 1d: Application initialization continuing after DB and services');
 
     // ========================================================================
     // ITEM #7: Setup periodic log cleanup (daily at 2 AM)
@@ -466,10 +468,17 @@ const initializeApp = async () => {
 // Export app for testing BEFORE server starts
 module.exports = app;
 
-// Execute the initialization sequence (DO NOT START SERVER UNTIL DB IS READY)
-// But skip if we're in test environment
+// Start server immediately for platforms like Render that expect immediate port binding
 if (process.env.NODE_ENV !== 'test') {
-  initializeApp();
+  // Start server immediately
+  console.log('🚀 Starting ChukaCribs server...');
+  startServer();
+
+  // Do async initialization in background
+  initializeApp().catch(error => {
+    console.error('❌ Fatal error during application initialization:', error);
+    process.exit(1);
+  });
 }
 
 // Initialize CacheManager and attach to app.locals so routes/middleware can use it
@@ -785,113 +794,84 @@ app.use(enhancedErrorHandler);
 // 404 handler (MUST be last)
 app.use(notFoundHandler);
 
-// Start HTTP server with graceful shutdown and port fallback
+// Start HTTP server with graceful shutdown (static port only)
 const startServer = () => {
-  let currentPort = parseInt(PORT) || 3000;
-  const maxAttempts = 5;
-  let attempts = 0;
+  const server = app.listen(PORT, HOST, () => {
+    logger.info(`🏠 ChukaCribs server running on http://localhost:${PORT}`);
+    globalLogger.info('✅ Server started successfully', {
+      port: PORT,
+      host: HOST,
+      nodeEnv: process.env.NODE_ENV,
+      uptime: process.uptime()
+    });
+    console.log(`\n🏠 ChukaCribs server is running on http://localhost:${PORT}`);
+    console.log(`📡 API endpoint: http://localhost:${PORT}/api/houses`);
+    console.log(`🏪 Landlord Portal: http://localhost:${PORT}/landlord-login`);
+    console.log(`💚 Visit the website and explore available houses!\n`);
+  });
 
-  const tryListen = () => {
-    attempts++;
-    
-    if (attempts > maxAttempts) {
-      const errorMsg = `Could not find an available port after ${maxAttempts} attempts`;
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      const errorMsg = `Port ${PORT} is already in use; Render expects this port.`;
       logger.error(errorMsg);
       globalLogger.error(errorMsg);
       console.error(`❌ ${errorMsg}`);
       process.exit(1);
     }
 
-    try {
-      console.log(`📍 Attempting to listen on ${HOST}:${currentPort}...`);
-      const server = app.listen(currentPort, HOST, () => {
-        logger.info(`🏠 ChukaCribs server running on http://localhost:${currentPort}`);
-        globalLogger.info('✅ Server started successfully', {
-          port: currentPort,
-          host: HOST,
-          nodeEnv: process.env.NODE_ENV,
-          uptime: process.uptime()
-        });
-        console.log(`\n🏠 ChukaCribs server is running on http://localhost:${currentPort}`);
-        console.log(`📡 API endpoint: http://localhost:${currentPort}/api/houses`);
-        console.log(`🏪 Landlord Portal: http://localhost:${currentPort}/landlord-login`);
-        console.log(`💚 Visit the website and explore available houses!\n`);
-      });
-      
-      server.on('error', (err) => {
-        if (err.code === 'EADDRINUSE') {
-          // Port is in use, try the next one
-          console.warn(`⚠️  Port ${currentPort} is already in use, trying ${currentPort + 1}...`);
-          currentPort++;
-          server.close();
-          tryListen();
-        } else {
-          // Some other error
-          logger.error('Server error:', err);
-          globalLogger.error('Server error', { error: err.message, code: err.code });
-          console.error('❌ Server error:', err.message);
-          
-          server.close(async () => {
-            try {
-              const mongoose = require('mongoose');
-              await mongoose.connection.close();
-            } catch (closeErr) {
-              // ignore
-            }
-            setTimeout(() => process.exit(1), 1000);
-          });
+    logger.error('Server error:', err);
+    globalLogger.error('Server error', { error: err.message, code: err.code });
+    console.error('❌ Server error:', err.message);
+
+    server.close(async () => {
+      try {
+        const mongoose = require('mongoose');
+        if (mongoose.connection.readyState === 1) {
+          await mongoose.connection.close();
         }
-      });
+      } catch (closeErr) {
+        // ignore
+      }
+      setTimeout(() => process.exit(1), 1000);
+    });
+  });
 
-      // Graceful shutdown on SIGTERM/SIGINT
-      const gracefulShutdown = async (signal) => {
-        console.log(`\n${signal} received, gracefully shutting down...`);
-        globalLogger.info(`Shutdown signal received: ${signal}`);
-        
-        server.close(async () => {
-          try {
-            // Close database connection
-            const mongoose = require('mongoose');
-            if (mongoose.connection.readyState === 1) {
-              await mongoose.connection.close();
-              globalLogger.info('Database connection closed');
-              console.log('✅ Database connection closed');
-            }
-          } catch (err) {
-            globalLogger.error('Error closing database', { error: err.message });
-            console.error('Error closing database:', err.message);
-          }
-          
-          // Close structured logger streams
-          try {
-            globalLogger.close();
-          } catch (err) {
-            // Ignore
-          }
-          
-          console.log('✅ Server shutdown complete');
-          globalLogger.info('Server shutdown complete');
-          process.exit(0);
-        });
+  const gracefulShutdown = async (signal) => {
+    console.log(`\n${signal} received, gracefully shutting down...`);
+    globalLogger.info(`Shutdown signal received: ${signal}`);
 
-        // Force exit after 10 seconds if graceful shutdown takes too long
-        setTimeout(() => {
-          console.error('⚠️  Forcing shutdown after timeout');
-          process.exit(1);
-        }, 10000);
-      };
+    server.close(async () => {
+      try {
+        const mongoose = require('mongoose');
+        if (mongoose.connection.readyState === 1) {
+          await mongoose.connection.close();
+          globalLogger.info('Database connection closed');
+          console.log('✅ Database connection closed');
+        }
+      } catch (err) {
+        globalLogger.error('Error closing database', { error: err.message });
+        console.error('Error closing database:', err.message);
+      }
 
-      process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-      process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+      try {
+        globalLogger.close();
+      } catch (err) {
+        // ignore
+      }
 
-    } catch (err) {
-      logger.error('Failed to start server:', err);
-      console.error('❌ Failed to start server:', err.message);
+      console.log('✅ Server shutdown complete');
+      globalLogger.info('Server shutdown complete');
+      process.exit(0);
+    });
+
+    setTimeout(() => {
+      console.error('⚠️  Forcing shutdown after timeout');
       process.exit(1);
-    }
+    }, 10000);
   };
 
-  tryListen();
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 };
 
 // Server start is triggered from initializeApp() after DB initialization
