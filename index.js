@@ -469,7 +469,7 @@ module.exports = app;
 
 // Start HTTP server with graceful shutdown (static port only)
 const startServer = () => {
-  const server = app.listen(PORT, host() => {
+  const server = app.listen(PORT, "0.0.0.0",() => {
     logger.info(`🏠 ChukaCribs server running on http://localhost:${PORT}`);
     globalLogger.info('✅ Server started successfully', {
       port: PORT,
@@ -555,8 +555,9 @@ if (process.env.NODE_ENV !== 'test') {
 
   // Do async initialization in background
   initializeApp().catch(error => {
-    console.error('❌ Fatal error during application initialization:', error);
-    process.exit(1);
+    console.error('❌ Error during background application initialization:', error);
+    logger.error('Background initialization failed', { error: error.message });
+    // Do not exit the process here to keep the HTTP server alive for Render
   });
 }
 
