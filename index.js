@@ -469,7 +469,7 @@ module.exports = app;
 
 // Start HTTP server with graceful shutdown (static port only)
 const startServer = () => {
-  const server = app.listen(PORT, () => {
+  const server = app.listen(PORT, host() => {
     logger.info(`🏠 ChukaCribs server running on http://localhost:${PORT}`);
     globalLogger.info('✅ Server started successfully', {
       port: PORT,
