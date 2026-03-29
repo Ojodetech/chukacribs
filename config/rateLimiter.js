@@ -169,7 +169,10 @@ class RateLimiterManager {
       max: 5,
       message: 'Too many payment attempts, please try again after 1 hour.',
       name: 'payment',
-      skip: (req) => !req.user?.id
+      skip: (req) => {
+        // Do not rate limit M-Pesa callback endpoints, but keep limits for public payment actions.
+        return req.path === '/mpesa-callback' || req.path === '/mpesa/callback';
+      }
     });
   }
 
