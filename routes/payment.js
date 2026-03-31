@@ -265,6 +265,40 @@ router.post('/mpesa/callback', async (req, res) => {
 });
 
 /**
+ * POST /mpesa-validation
+ * Safaricom C2B validation URL
+ */
+router.post('/mpesa-validation', async (req, res) => {
+  try {
+    logger.info('M-Pesa validation request received', { body: req.body });
+
+    // You can add business-specific validation here, e.g. amount limits,
+    // accepted paybill or till numbers, or account reference checks.
+    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  } catch (error) {
+    logger.error('M-Pesa validation error', { error: error.message, stack: error.stack });
+    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  }
+});
+
+/**
+ * POST /mpesa-confirmation
+ * Safaricom C2B confirmation URL
+ */
+router.post('/mpesa-confirmation', async (req, res) => {
+  try {
+    logger.info('M-Pesa confirmation received', { body: req.body });
+
+    // TODO: store payment confirmation data if you want to reconcile
+    // C2B payments on your system later.
+    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  } catch (error) {
+    logger.error('M-Pesa confirmation processing error', { error: error.message, stack: error.stack });
+    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  }
+});
+
+/**
  * POST /api/payment/poll-status
  * Poll payment status by checking M-Pesa directly
  * Useful for frontend to check if user completed payment

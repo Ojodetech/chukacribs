@@ -171,7 +171,12 @@ class RateLimiterManager {
       name: 'payment',
       skip: (req) => {
         // Do not rate limit M-Pesa callback endpoints, but keep limits for public payment actions.
-        return req.path === '/mpesa-callback' || req.path === '/mpesa/callback';
+        return [
+          '/mpesa-callback',
+          '/mpesa/callback',
+          '/mpesa-validation',
+          '/mpesa-confirmation'
+        ].includes(req.path);
       }
     });
   }
