@@ -39,6 +39,7 @@ router.post(
 
       // Generate reference ID (order ID)
       const referenceId = `TOKEN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const tokenValue = `tok_${Math.random().toString(36).substr(2, 18)}`;
 
       // Initiate M-Pesa STK push
       const amountToCharge = amount;
@@ -75,6 +76,7 @@ router.post(
 
       // Store pending token in database (store checkoutRequestId as orderTrackingId)
       const tokenData = new Token({
+        token: tokenValue,
         referenceId,
         orderTrackingId: result.checkoutRequestId || result.requestId || null,
         phoneNumber,
