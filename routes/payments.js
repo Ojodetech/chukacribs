@@ -47,16 +47,16 @@ router.post(
 
       let result = await initiateSTKPush(phoneNumber, amountToCharge, orderId);
 
-      // if the real API was used and we got a network/timeout error, attempt a
-      // transparent mock fallback so that development can carry on even when
-      // Safaricom's sandbox is behaving badly.
+      // if the real API was used and we got a network/timeout error,
+      // do not fall back to the mock in production.
       const usingMock =
         process.env.USE_MOCK_MPESA === '1' ||
-        process.env.USE_MOCK_MPESA === 'true';
+        process.env.USE_MOCK_MPESA === 'true' ||
+        process.env.NODE_ENV !== 'production';
 
-      if (!result.success && !usingMock) {
+      if (!result.success && process.env.NODE_ENV !== 'production') {
         // some kind of failure (network, configuration, validation on Safaricom side)
-        // automatically try the mock implementation so front-end flow can continue.
+        // automatically try the mock implementation during development.
         logger.warn('M-Pesa initiation failed; falling back to mock', {
           phoneNumber,
           error: result.error
