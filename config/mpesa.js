@@ -93,10 +93,21 @@ const initiateSTKPush = async (phoneNumber, amount, orderId) => {
       }
     });
 
+    const responseCode = response.data?.ResponseCode;
+    if (responseCode !== '0' && responseCode !== 0) {
+      const errorMessage = response.data?.ResponseDescription || 'STK Push request rejected by Safaricom';
+      console.error('M-Pesa STK push rejected:', response.data);
+      return {
+        success: false,
+        error: errorMessage,
+        response: response.data
+      };
+    }
+
     return {
       success: true,
       checkoutRequestId: response.data.CheckoutRequestID,
-      responseCode: response.data.ResponseCode,
+      responseCode,
       message: response.data.ResponseDescription
     };
   } catch (error) {
