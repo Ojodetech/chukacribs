@@ -15,7 +15,7 @@ const options = {
       contact: {
         name: 'ChukaCribs Support',
         email: 'support@chukacribs.co.ke'
-      }
+      },
       license: {
         name: 'MIT'
       }
