@@ -21,19 +21,41 @@ router.post(
   ],
   async (req, res) => {
     try {
+      console.log('🔄 STK Push request received:', {
+        phoneNumber: req.body.phoneNumber,
+        ip: req.ip,
+        userAgent: req.get('User-Agent'),
+        timestamp: new Date().toISOString()
+      });
+
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
+        console.log('❌ Validation errors:', errors.array());
         return res.status(400).json({ errors: errors.array() });
       }
 
       const { phoneNumber } = req.body;
       const amount = process.env.PAYMENT_AMOUNT || 100;
 
+      console.log('💰 Initiating payment:', {
+        phoneNumber,
+        amount,
+        nodeEnv: process.env.NODE_ENV,
+        useMockMpesa: process.env.USE_MOCK_MPESA
+      });
+
       // Generate order ID
       const orderId = `TOKEN_${Date.now()}`;
 
       // Initiate M-Pesa STK push
       const result = await initiateSTKPush(phoneNumber, amount, orderId);
+
+      console.log('📱 STK Push result:', {
+        success: result.success,
+        checkoutRequestId: result.checkoutRequestId,
+        error: result.error,
+        responseCode: result.responseCode
+      });
 
       if (!result.success) {
         return res.status(400).json({
@@ -51,7 +73,11 @@ router.post(
         currency: 'KES'
       });
     } catch (error) {
-      console.error('Payment initiation error:', error);
+      console.error('❌ Payment initiation error:', {
+        message: error.message,
+        stack: error.stack,
+        phoneNumber: req.body?.phoneNumber
+      });
       res.status(500).json({
         success: false,
         message: 'Internal server error',
@@ -116,6 +142,116 @@ router.post('/mpesa-callback', async (req, res) => {
     }
 
     const stkCallback = Body.stkCallback;
+    logger.info('M-Pesa Callback received', {
+      checkoutId: stkCallback.CheckoutRequestID,
+      resultCode: stkCallback.ResultCode,
+      resultDesc: stkCallback.ResultDesc
+    });
+
+    // Check if payment was successful (ResultCode 0 = success)
+    if (stkCallback.ResultCode !== 0) {
+      logger.warn(`Payment failed with code: ${stkCallback.ResultCode}`, {
+        resultDesc: stkCallback.ResultDesc,
+        checkoutId: stkCallback.CheckoutRequestID
+      });
+      return res.status(200).json({ success: false });
+    }
+
+    // Extract payment metadata
+    const callbackMetadata = stkCallback.CallbackMetadata?.Item || [];
+    const paymentData = {};
+
+    callbackMetadata.forEach(item => {
+      if (item.Name === 'Amount') {paymentData.amount = item.Value;}
+      if (item.Name === 'MpesaReceiptNumber') {paymentData.mpesaReceiptNumber = item.Value;}
+      if (item.Name === 'TransactionDate') {paymentData.transactionDate = item.Value;}
+      if (item.Name === 'PhoneNumber') {paymentData.phoneNumber = formatPhoneNumber(item.Value);}
+    });
+
+    const checkoutRequestId = stkCallback.CheckoutRequestID;
+    const merchantRequestId = stkCallback.MerchantRequestID;
+
+    // Find token by checkoutRequestId and update it
+    const token = await Token.findOneAndUpdate(
+      { orderTrackingId: checkoutRequestId },
+      {
+        phoneNumber: paymentData.phoneNumber,
+        amount: paymentData.amount,
+        mpesaReceiptNumber: paymentData.mpesaReceiptNumber,
+        paymentStatus: 'completed',
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        paymentGateway: 'mpesa'
+      },
+      { new: true }
+    );
+
+    if (!token) {
+      logger.error('Token not found for callback', {
+        checkoutRequestId,
+        phoneNumber: paymentData.phoneNumber
+      });
+      return res.status(200).json({ success: false, message: 'Token not found' });
+    }
+
+    logger.info('Payment completed successfully', {
+      tokenId: token._id,
+      checkoutId: checkoutRequestId,
+      amount: paymentData.amount,
+      phone: paymentData.phoneNumber
+    });
+
+    // Return success to M-Pesa
+    res.status(200).json({ success: true });
+  } catch (error) {
+    logger.error('M-Pesa callback processing error', {
+      error: error.message,
+      stack: error.stack
+    });
+    res.status(200).json({ success: false, message: 'Processing error' });
+  }
+});
+
+/**
+ * POST /api/payment/callback
+ * Alias for M-Pesa callback endpoint (without 'mpesa' in URL)
+ * Handles both nested (Body.stkCallback) and root-level stkCallback structures
+ */
+router.post('/callback', async (req, res) => {
+  try {
+    // Add detailed logging to diagnose what M-Pesa is sending
+    console.log('📥 Raw M-Pesa callback received:', {
+      contentType: req.get('content-type'),
+      contentLength: req.get('content-length'),
+      bodyKeys: Object.keys(req.body),
+      bodyType: typeof req.body,
+      bodyIsString: typeof req.body === 'string'
+    });
+
+    let stkCallback;
+    
+    // Check for nested Body.stkCallback structure (standard M-Pesa format)
+    if (req.body.Body && req.body.Body.stkCallback) {
+      stkCallback = req.body.Body.stkCallback;
+      console.log('✅ Found stkCallback in nested format (Body.stkCallback)');
+    }
+    // Check for root-level stkCallback structure
+    else if (req.body.stkCallback) {
+      stkCallback = req.body.stkCallback;
+      console.log('✅ Found stkCallback at root level');
+    }
+    // Check if entire body IS the stkCallback (in case M-Pesa sends it wrapped differently)
+    else if (req.body.CheckoutRequestID) {
+      stkCallback = req.body;
+      console.log('✅ Entire body is stkCallback (no wrapper)');
+    }
+    else {
+      logger.warn('Invalid M-Pesa callback structure - no stkCallback found', { 
+        body: req.body,
+        bodyKeys: Object.keys(req.body)
+      });
+      return res.status(200).json({ success: false, message: 'Invalid callback' });
+    }
+
     logger.info('M-Pesa Callback received', {
       checkoutId: stkCallback.CheckoutRequestID,
       resultCode: stkCallback.ResultCode,
