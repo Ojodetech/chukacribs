@@ -75,10 +75,8 @@ const instances = [];  // Registry of application instances
 
 const app = express();
 
-// On hosted platforms like Render, requests pass through a proxy load balancer
-// which sets X-Forwarded-For. Express must trust the proxy to avoid rate-limit
-// errors such as ERR_ERL_UNEXPECTED_X_FORWARDED_FOR.
-app.set('trust proxy', true);
+// Trust proxy is handled safely in rate limiter keyGenerator
+// No global trust proxy setting needed to avoid security warnings
 
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 

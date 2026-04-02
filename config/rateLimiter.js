@@ -20,6 +20,26 @@ class RateLimiterManager {
   }
 
   /**
+   * Safe key generator that properly handles proxy headers
+   * For cloud platforms like Render, trusts the first IP in X-Forwarded-For
+   */
+  safeKeyGenerator(req) {
+    // For cloud platforms, X-Forwarded-For contains: client, proxy1, proxy2, ...
+    // We trust the first IP as the client IP
+    const xForwardedFor = req.get('x-forwarded-for');
+    if (xForwardedFor) {
+      // Take the first IP in the chain (the actual client)
+      const clientIP = xForwardedFor.split(',')[0].trim();
+      if (clientIP) {
+        return clientIP;
+      }
+    }
+
+    // Fallback to req.ip (which may be the proxy IP)
+    return req.ip || req.connection.remoteAddress || 'unknown';
+  }
+
+  /**
    * Create a rate limiter with Redis store
    * Falls back to memory store if Redis unavailable
    */
@@ -29,7 +49,7 @@ class RateLimiterManager {
       max = 100,
       message = 'Too many requests, please try again later.',
       statusCode = 429,
-      keyGenerator = undefined,
+      keyGenerator = this.safeKeyGenerator.bind(this), // Use safe key generator by default
       skip = () => false,
       name = 'generic'
     } = options;
