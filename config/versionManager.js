@@ -138,7 +138,7 @@ class APIVersionManager {
       },
       migration: {
         guide: '/docs/migration-guide',
-        support: 'support@chukacribs.com'
+        support: 'support@chukacribs.co.ke'
       }
     };
   }

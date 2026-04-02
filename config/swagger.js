@@ -14,8 +14,8 @@ const options = {
       description: 'Student-focused accommodation website API for Chuka',
       contact: {
         name: 'ChukaCribs Support',
-        email: 'support@chukacribs.com'
-      },
+        email: 'support@chukacribs.co.ke'
+      }
       license: {
         name: 'MIT'
       }

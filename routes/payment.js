@@ -265,25 +265,54 @@ router.post('/mpesa/callback', async (req, res) => {
 });
 
 /**
+ * Shared handler for C2B validation links
+ */
+const c2bValidationHandler = async (req, res) => {
+  try {
+    logger.info('C2B validation request received', { body: req.body });
+    // Add business-specific checks here if needed.
+    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  } catch (error) {
+    logger.error('C2B validation error', { error: error.message, stack: error.stack });
+    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  }
+};
+
+/**
+ * Shared handler for C2B confirmation links
+ */
+const c2bConfirmationHandler = async (req, res) => {
+  try {
+    logger.info('C2B confirmation received', { body: req.body });
+    // Optional: store confirmation payload for reconciliation.
+    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  } catch (error) {
+    logger.error('C2B confirmation processing error', { error: error.message, stack: error.stack });
+    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
+  }
+};
+
+/**
  * POST /mpesa-validation
  * Safaricom C2B validation URL
  */
-router.post('/mpesa-validation', async (req, res) => {
-  try {
-    logger.info('M-Pesa validation request received', { body: req.body });
-
-    // You can add business-specific validation here, e.g. amount limits,
-    // accepted paybill or till numbers, or account reference checks.
-    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
-  } catch (error) {
-    logger.error('M-Pesa validation error', { error: error.message, stack: error.stack });
-    res.status(200).json({ ResultCode: 0, ResultDesc: 'Accepted' });
-  }
-});
+router.post('/mpesa-validation', c2bValidationHandler);
+router.post('/validation', c2bValidationHandler);
+router.post('/c2b-validation', c2bValidationHandler);
 
 /**
  * POST /mpesa-confirmation
  * Safaricom C2B confirmation URL
+ */
+router.post('/mpesa-confirmation', c2bConfirmationHandler);
+router.post('/confirmation', c2bConfirmationHandler);
+router.post('/c2b-confirmation', c2bConfirmationHandler);
+
+/**
+ * POST /api/payment/poll-status
+ * Poll payment status by checking M-Pesa directly
+ * Useful for frontend to check if user completed payment
+ * Body: { checkoutRequestId: string }
  */
 router.post('/mpesa-confirmation', async (req, res) => {
   try {
