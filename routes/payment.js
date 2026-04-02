@@ -224,8 +224,16 @@ router.post('/callback', async (req, res) => {
       contentLength: req.get('content-length'),
       bodyKeys: Object.keys(req.body),
       bodyType: typeof req.body,
-      bodyIsString: typeof req.body === 'string'
+      bodyIsString: typeof req.body === 'string',
+      bodyEmpty: Object.keys(req.body).length === 0
     });
+
+    // If body is empty, this is likely M-Pesa testing connectivity - return 200 OK
+    if (Object.keys(req.body).length === 0) {
+      console.log('⚠️ Empty callback body - likely M-Pesa connectivity test');
+      logger.info('M-Pesa connectivity test received (empty callback)');
+      return res.status(200).json({ status: 'ok', message: 'Endpoint is reachable' });
+    }
 
     let stkCallback;
     

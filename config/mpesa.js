@@ -19,6 +19,19 @@ const isMockRequested =
 const defaultMockMode = process.env.NODE_ENV !== 'production';
 const useMock = isMockRequested || defaultMockMode;
 
+console.log('🔧 M-Pesa Configuration:', {
+  nodeEnv: process.env.NODE_ENV,
+  useMockMpesa: process.env.USE_MOCK_MPESA,
+  isMockRequested,
+  defaultMockMode,
+  useMock,
+  hasConsumerKey: !!process.env.MPESA_CONSUMER_KEY,
+  hasConsumerSecret: !!process.env.MPESA_CONSUMER_SECRET,
+  hasBusinessShortcode: !!process.env.MPESA_BUSINESS_SHORTCODE,
+  hasPasskey: !!process.env.MPESA_PASSKEY,
+  hasCallbackUrl: !!process.env.MPESA_CALLBACK_URL
+});
+
 if (!useMock) {
   const requiredVars = [
     'MPESA_CONSUMER_KEY',
@@ -59,9 +72,18 @@ const generateAccessToken = async () => {
 // Create STK Push (Prompt for payment)
 const initiateSTKPush = async (phoneNumber, amount, orderId) => {
   try {
+    console.log('📱 Initiating STK Push:', {
+      phoneNumber,
+      amount,
+      orderId,
+      callbackUrl: process.env.MPESA_CALLBACK_URL
+    });
+
     const accessToken = await generateAccessToken();
+    console.log('🔑 Access token obtained');
+
     const timestamp = new Date().toISOString().replace(/[^\d]/g, '').slice(0, 14);
-    
+
     // Create password: Base64(BusinessShortCode + Passkey + Timestamp)
     const password = Buffer.from(
       `${process.env.MPESA_BUSINESS_SHORTCODE}${process.env.MPESA_PASSKEY}${timestamp}`
@@ -69,7 +91,7 @@ const initiateSTKPush = async (phoneNumber, amount, orderId) => {
 
     // Determine callback URL: prefer NGROK tunnel when enabled for local testing
     const callbackUrl = (process.env.USE_NGROK === 'true' || process.env.USE_NGROK === '1') && process.env.NGROK_URL
-      ? `${process.env.NGROK_URL.replace(/\/+$/,'')}/api/payment/mpesa-callback`
+      ? `${process.env.NGROK_URL.replace(/\/+$/,'')}/api/payment/callback`
       : process.env.MPESA_CALLBACK_URL;
 
     const payload = {
@@ -86,6 +108,11 @@ const initiateSTKPush = async (phoneNumber, amount, orderId) => {
       TransactionDesc: 'ChukaCribs Access Token - 24 Hour Viewing Pass'
     };
 
+    console.log('📤 Sending STK Push request to Safaricom:', {
+      url: STK_PUSH_URL,
+      payload: { ...payload, Password: '***HIDDEN***' }
+    });
+
     const response = await axios.post(STK_PUSH_URL, payload, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -93,10 +120,17 @@ const initiateSTKPush = async (phoneNumber, amount, orderId) => {
       }
     });
 
+    console.log('📥 STK Push response from Safaricom:', {
+      status: response.status,
+      responseCode: response.data?.ResponseCode,
+      responseDescription: response.data?.ResponseDescription,
+      checkoutRequestId: response.data?.CheckoutRequestID
+    });
+
     const responseCode = response.data?.ResponseCode;
     if (responseCode !== '0' && responseCode !== 0) {
       const errorMessage = response.data?.ResponseDescription || 'STK Push request rejected by Safaricom';
-      console.error('M-Pesa STK push rejected:', response.data);
+      console.error('❌ M-Pesa STK push rejected:', response.data);
       return {
         success: false,
         error: errorMessage,
@@ -111,7 +145,11 @@ const initiateSTKPush = async (phoneNumber, amount, orderId) => {
       message: response.data.ResponseDescription
     };
   } catch (error) {
-    console.error('Error initiating STK push:', error.response?.data || error.message);
+    console.error('❌ Error initiating STK push:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
     return {
       success: false,
       error: error.response?.data?.errorMessage || error.message

@@ -194,6 +194,7 @@ class RateLimiterManager {
         return [
           '/mpesa-callback',
           '/mpesa/callback',
+          '/callback',
           '/mpesa-validation',
           '/mpesa-confirmation'
         ].includes(req.path);

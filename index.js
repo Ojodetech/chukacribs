@@ -3,6 +3,18 @@ require('dotenv').config();
 // enable express async errors to auto-forward rejected promises
 require('express-async-errors');
 
+console.log('🚀 Starting ChukaCribs server...');
+console.log('📋 Environment check:', {
+  NODE_ENV: process.env.NODE_ENV,
+  USE_MOCK_MPESA: process.env.USE_MOCK_MPESA,
+  MPESA_CONSUMER_KEY: process.env.MPESA_CONSUMER_KEY ? '***SET***' : 'NOT SET',
+  MPESA_CONSUMER_SECRET: process.env.MPESA_CONSUMER_SECRET ? '***SET***' : 'NOT SET',
+  MPESA_BUSINESS_SHORTCODE: process.env.MPESA_BUSINESS_SHORTCODE || 'NOT SET',
+  MPESA_PASSKEY: process.env.MPESA_PASSKEY ? '***SET***' : 'NOT SET',
+  MPESA_CALLBACK_URL: process.env.MPESA_CALLBACK_URL || 'NOT SET',
+  PORT: process.env.PORT || 'NOT SET'
+});
+
 const RateLimiterManager = require('./config/rateLimiter');
 const blacklistMiddleware = require('./middleware/blacklistMiddleware');
 const express = require('express');
@@ -216,7 +228,16 @@ app.use(cors({
 app.use(cookieParser()); // Parse cookies
 
 // Delegate API traffic through `apiLimiter` which may be replaced at runtime
-app.use('/api/', (req, res, next) => apiLimiter(req, res, next));
+app.use('/api/', (req, res, next) => {
+  console.log('🌐 API request received:', {
+    method: req.method,
+    path: req.path,
+    ip: req.ip,
+    userAgent: req.get('User-Agent'),
+    timestamp: new Date().toISOString()
+  });
+  apiLimiter(req, res, next);
+});
 
 // Body parsing Middleware
 app.use(express.json({ limit: '10mb' }));
