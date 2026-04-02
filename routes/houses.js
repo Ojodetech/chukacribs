@@ -2,6 +2,7 @@ const express = require('express');
 const asyncHandler = require('express-async-handler');
 const { body, param, query, validationResult } = require('express-validator');
 const House = require('../models/House');
+const Booking = require('../models/Booking');
 const Landlord = require('../models/Landlord');
 const logger = require('../config/logger');
 const { authenticateLandlord } = require('../config/auth');
@@ -75,12 +76,34 @@ router.get('/', asyncHandler(async (req, res) => {
         sortOptions = { createdAt: 1 };
     }
 
-    const houses = await House.find(query)
+    let houses = await House.find(query)
         .sort(sortOptions)
         .skip(skip)
         .limit(limitNum)
-        .select('_id title location price type bedrooms description amenities images landlordName contact')
+        .select('_id title location price type bedrooms units description amenities images videos features landlord landlordEmail landlordPhone contact')
         .lean();
+
+    const houseIds = houses.map(house => house._id);
+    const now = new Date();
+    const bookingCounts = await Booking.aggregate([
+        { $match: { houseId: { $in: houseIds }, status: { $ne: 'cancelled' }, expiresAt: { $gt: now } } },
+        { $group: { _id: '$houseId', count: { $sum: 1 } } }
+    ]);
+
+    const bookedCountMap = bookingCounts.reduce((acc, item) => {
+        acc[item._id.toString()] = item.count;
+        return acc;
+    }, {});
+
+    houses = houses.map(house => {
+        const totalUnits = house.units || 1;
+        const bookedUnits = bookedCountMap[house._id.toString()] || 0;
+        return {
+            ...house,
+            units: totalUnits,
+            unitsRemaining: Math.max(totalUnits - bookedUnits, 0)
+        };
+    });
 
     res.json(houses || []);
 }));
@@ -243,6 +266,7 @@ router.post('/', authenticateLandlord, handleUploads, async (req, res) => {
             price: parseInt(req.body.price),
             type: req.body.type,
             bedrooms: parseInt(req.body.bedrooms),
+            units: parseInt(req.body.units) || 1,
             description: req.body.description,
             images: images,
             videos: videos,

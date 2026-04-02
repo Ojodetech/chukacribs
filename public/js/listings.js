@@ -149,7 +149,9 @@ function loadHousesFromAPI() {
                 price: house.price,
                 type: house.type,
                 description: house.description,
-                images: house.images || ['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%236366f1" width="400" height="300"/%3E%3Ctext x="50%" y="50%" font-size="20" fill="white" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E'],
+                units: house.units || 1,
+                unitsRemaining: typeof house.unitsRemaining === 'number' ? house.unitsRemaining : (house.units || 1),
+                images: house.images || ['data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%236366f1" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" font-size="20" fill="white" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E'],
                 videos: house.videos || [],
                 features: house.features || [],
                 landlord: house.landlord,
@@ -185,6 +187,7 @@ function displayHouses(houses) {
                 <h3 class="card-title">${house.title}</h3>
                 <p class="card-location">📍 ${house.location}</p>
                 <p class="card-price">KSH ${house.price.toLocaleString()}</p>
+                <p class="card-units">🧮 ${house.unitsRemaining}/${house.units} units remaining</p>
                 <div class="card-landlord-info card-landlord-panel">
                     <p class=""><strong>👤 ${house.landlord || 'Landlord'}</strong></p>
                     ${house.landlordPhone ? `<p class="muted-sm">📱 ${house.landlordPhone}</p>` : ''}

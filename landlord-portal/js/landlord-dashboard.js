@@ -473,8 +473,10 @@ async function handleAddProperty(e) {
     const priceValue = document.getElementById('propertyPrice').value.trim();
     const type = document.getElementById('propertyType').value.trim();
     const bedroomsValue = document.getElementById('propertyBedrooms').value.trim();
+    const unitsValue = document.getElementById('propertyUnits').value.trim();
+    const description = document.getElementById('propertyDescription').value.trim();
 
-    console.log('Form values:', { title, location, priceValue, type, bedroomsValue });
+    console.log('Form values:', { title, location, priceValue, type, bedroomsValue, unitsValue, description });
 
     // Get amenity checkboxes
     const hasWifi = document.getElementById('propertyWifi').checked;
@@ -505,6 +507,12 @@ async function handleAddProperty(e) {
     }
     if (!bedroomsValue || isNaN(parseInt(bedroomsValue)) || parseInt(bedroomsValue) < 0) {
         validationErrors.push('Bedrooms must be a valid number');
+    }
+    if (!unitsValue || isNaN(parseInt(unitsValue)) || parseInt(unitsValue) < 1) {
+        validationErrors.push('Total units must be a valid number of at least 1');
+    }
+    if (!description || description.length === 0) {
+        validationErrors.push('Property description is required');
     }
     if (!mediaInput.files || mediaInput.files.length === 0) {
         validationErrors.push('Please upload at least one image or video');
@@ -537,6 +545,7 @@ async function handleAddProperty(e) {
         // Parse values
         const price = parseInt(priceValue);
         const bedrooms = parseInt(bedroomsValue);
+        const units = parseInt(unitsValue);
 
         // Create FormData for file uploads
         const formData = new FormData();
@@ -545,6 +554,8 @@ async function handleAddProperty(e) {
         formData.append('price', price);
         formData.append('type', type);
         formData.append('bedrooms', bedrooms);
+        formData.append('units', units);
+        formData.append('description', description);
         formData.append('status', 'pending');
 
         // Add amenities

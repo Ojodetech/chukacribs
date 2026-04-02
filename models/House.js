@@ -27,6 +27,11 @@ const houseSchema = new mongoose.Schema(
       min: 0,
       default: 1
     },
+    units: {
+      type: Number,
+      min: 1,
+      default: 1
+    },
     description: {
       type: String,
       required: true,

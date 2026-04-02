@@ -28,10 +28,8 @@ const connectDB = async () => {
       retryWrites: true,
       retryReads: true,
       writeConcern: { w: 'majority' },
-      readPreference: 'primary',
       monitorCommands: true,
-      heartbeatFrequencyMS: 30000,
-      maxStalenessSeconds: 90
+      heartbeatFrequencyMS: 30000
       // Removed deprecated options: useNewUrlParser and useUnifiedTopology (default in Mongoose 6+)
     };
 

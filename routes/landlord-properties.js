@@ -94,11 +94,14 @@ router.post('/', authenticateLandlord, upload.fields([
   { name: 'video', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const { title, location, price, type, bedrooms, description, wifi, water, electricity } = req.body;
+    const { title, location, price, type, bedrooms, units, description, wifi, water, electricity } = req.body;
 
-    // Validation - only require these fields from request
+    const parsedUnits = parseInt(units, 10);
     if (!title || !location || !price || !type || !description) {
       return res.status(400).json({ message: 'Title, location, price, type, and description are required' });
+    }
+    if (isNaN(parsedUnits) || parsedUnits < 1) {
+      return res.status(400).json({ message: 'Total units must be a valid number of at least 1' });
     }
 
     // Get landlord info from authenticated user (source of truth)
@@ -126,6 +129,7 @@ router.post('/', authenticateLandlord, upload.fields([
       price: parseInt(price),
       type,
       bedrooms: bedrooms ? parseInt(bedrooms) : 0,
+      units: parsedUnits,
       description,
       images: imagePaths,
       videos: videoPath ? [videoPath] : [],
