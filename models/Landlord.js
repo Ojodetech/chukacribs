@@ -53,6 +53,10 @@ const landlordSchema = new mongoose.Schema(
     emailVerificationExpiry: {
       type: Date
     },
+    unverifiedAccountCanResetAt: {
+      type: Date,
+      description: 'When an unverified account can be reset/deleted and re-registered (default: 7 days after creation)'
+    },
     phoneVerified: {
       type: Boolean,
       default: false

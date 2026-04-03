@@ -73,6 +73,11 @@ router.post(
       // Check if landlord with THIS EMAIL exists
       let landlord = await Landlord.findOne({ email });
       if (landlord) {
+        // Check if unverified account can be reset
+        if (!landlord.emailVerified && landlord.unverifiedAccountCanResetAt && new Date() >= landlord.unverifiedAccountCanResetAt) {
+          // Account can be reset - provide helpful error message
+          throw ConflictError.emailExists('This account was registered but never verified. Your account can be reset after the 7-day waiting period. Please try again later or contact support.');
+        }
         throw ConflictError.emailExists();
       }
 
@@ -89,9 +94,11 @@ router.post(
       const crypto = require('crypto');
       const verificationToken = crypto.randomBytes(32).toString('hex');
       const verificationExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+      const unverifiedAccountCanResetAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
       
       landlord.emailVerificationToken = verificationToken;
       landlord.emailVerificationExpiry = verificationExpiry;
+      landlord.unverifiedAccountCanResetAt = unverifiedAccountCanResetAt;
       landlord.emailVerified = false;
       
       await landlord.save();
@@ -336,6 +343,213 @@ router.patch(
     }
   }
 );
+
+/**
+ * 🔄 RESEND VERIFICATION EMAIL
+ * POST /api/auth/resend-verification
+ * Allows users to request a new verification email
+ */
+router.post('/resend-verification', [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Valid email required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw ValidationError.fromValidationResult(errors);
+    }
+
+    const { email } = req.body;
+
+    // Find landlord by email
+    const landlord = await Landlord.findOne({ email });
+    if (!landlord) {
+      // Don't reveal if email exists - return generic success
+      return res.status(200).json({ 
+        success: true, 
+        message: 'If this email is registered, a verification link has been sent.'
+      });
+    }
+
+    // If already verified, return success without sending
+    if (landlord.emailVerified) {
+      return res.status(200).json({ 
+        success: true, 
+        message: 'This email is already verified. Please log in.' 
+      });
+    }
+
+    // Generate new verification token (valid for 24 hours)
+    const crypto = require('crypto');
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    landlord.emailVerificationToken = verificationToken;
+    landlord.emailVerificationExpiry = verificationExpiry;
+    await landlord.save();
+
+    // Send verification email
+    try {
+      const { sendVerificationEmailWithLink } = require('../config/email');
+      const verificationLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify-email?token=${verificationToken}`;
+      const emailResult = await sendVerificationEmailWithLink(email, {
+        name: landlord.name,
+        verificationLink
+      });
+
+      if (emailResult.success || emailResult.result) {
+        logger.info(`Verification email resent to: ${email}`);
+        return res.status(200).json({ 
+          success: true, 
+          message: 'Verification email has been sent. Please check your inbox.' 
+        });
+      } else {
+        logger.warn(`Failed to resend verification email to ${email}`);
+        throw ServiceUnavailableError.emailServiceDown('Failed to send verification email');
+      }
+    } catch (emailErr) {
+      logger.error(`Email error in resend-verification: ${emailErr.message}`);
+      throw ServiceUnavailableError.emailServiceDown(emailErr.message);
+    }
+  } catch (err) {
+    logger.error(`Resend verification error: ${err.message}`);
+    if (err.statusCode) {
+      return res.status(err.statusCode).json(err.toJSON());
+    }
+    res.status(500).json({ success: false, message: 'Error resending verification email' });
+  }
+});
+
+/**
+ * 🗑️ RESET UNVERIFIED ACCOUNT
+ * POST /api/auth/reset-unverified-account
+ * Allows users to delete an unverified account after 7 days to re-register
+ */
+router.post('/reset-unverified-account', [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Valid email required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw ValidationError.fromValidationResult(errors);
+    }
+
+    const { email } = req.body;
+
+    // Find landlord by email
+    const landlord = await Landlord.findOne({ email });
+    if (!landlord) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Email not found' 
+      });
+    }
+
+    // Check if already verified
+    if (landlord.emailVerified) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'This account is already verified. You can log in directly.' 
+      });
+    }
+
+    // Check if account can be reset (7 days have passed)
+    if (!landlord.unverifiedAccountCanResetAt || new Date() < landlord.unverifiedAccountCanResetAt) {
+      const daysRemaining = landlord.unverifiedAccountCanResetAt 
+        ? Math.ceil((landlord.unverifiedAccountCanResetAt - new Date()) / (1000 * 60 * 60 * 24))
+        : 7;
+      
+      return res.status(403).json({ 
+        success: false, 
+        message: `Account reset not yet available. Please try again in ${daysRemaining} day(s).`,
+        canResetAt: landlord.unverifiedAccountCanResetAt
+      });
+    }
+
+    // Delete the unverified account
+    await Landlord.findByIdAndDelete(landlord._id);
+    logger.info(`Unverified account deleted for email: ${email}`);
+
+    res.json({ 
+      success: true, 
+      message: 'Account has been reset. You can now register again with this email.' 
+    });
+  } catch (err) {
+    logger.error(`Reset unverified account error: ${err.message}`);
+    if (err.statusCode) {
+      return res.status(err.statusCode).json(err.toJSON());
+    }
+    res.status(500).json({ success: false, message: 'Error resetting account' });
+  }
+});
+
+/**
+ * ℹ️ CHECK ACCOUNT RESET STATUS
+ * POST /api/auth/check-account-status
+ * Allows users to check if their unverified account can be reset
+ */
+router.post('/check-account-status', [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Valid email required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      throw ValidationError.fromValidationResult(errors);
+    }
+
+    const { email } = req.body;
+
+    // Find landlord by email
+    const landlord = await Landlord.findOne({ email });
+    if (!landlord) {
+      return res.json({ 
+        exists: false,
+        message: 'No account found with this email' 
+      });
+    }
+
+    // If verified, can log in
+    if (landlord.emailVerified) {
+      return res.json({ 
+        exists: true,
+        verified: true,
+        message: 'Account is verified. You can log in.' 
+      });
+    }
+
+    // If unverified, check reset status
+    const now = new Date();
+    const canReset = landlord.unverifiedAccountCanResetAt && now >= landlord.unverifiedAccountCanResetAt;
+    const daysRemaining = landlord.unverifiedAccountCanResetAt 
+      ? Math.ceil((landlord.unverifiedAccountCanResetAt - now) / (1000 * 60 * 60 * 24))
+      : 0;
+
+    res.json({ 
+      exists: true,
+      verified: false,
+      canReset,
+      daysRemaining: Math.max(0, daysRemaining),
+      message: canReset 
+        ? 'Account can be reset now. You can delete and re-register.'
+        : `Account reset available in ${daysRemaining} day(s). Please verify your email or wait to reset.`,
+      canResetAt: landlord.unverifiedAccountCanResetAt
+    });
+  } catch (err) {
+    logger.error(`Check account status error: ${err.message}`);
+    if (err.statusCode) {
+      return res.status(err.statusCode).json(err.toJSON());
+    }
+    res.status(500).json({ success: false, message: 'Error checking account status' });
+  }
+});
 
 // Logout
 router.post('/logout', (req, res) => {
