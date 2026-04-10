@@ -114,40 +114,39 @@ const initiateSTKPush = async (phoneNumber, amount, orderId) => {
       payload: { ...payload, Password: '***HIDDEN***' }
     });
 
-    try {
-      const response = await axios.post(STK_PUSH_URL, payload, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      console.log('✅ STK RESPONSE:', response.data);
-
-      const responseCode = response.data?.ResponseCode;
-      if (responseCode !== '0' && responseCode !== 0) {
-        const errorMessage = response.data?.ResponseDescription || 'STK Push request rejected by Safaricom';
-        console.error('❌ M-Pesa STK push rejected:', response.data);
-        return {
-          success: false,
-          error: errorMessage,
-          response: response.data
-        };
+    const response = await axios.post(STK_PUSH_URL, payload, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
       }
+    });
 
-      return {
-        success: true,
-        checkoutRequestId: response.data.CheckoutRequestID,
-        responseCode,
-        message: response.data.ResponseDescription
-      };
-    } catch (error) {
-      console.error('🔥 SAFARICOM ERROR:', error.response?.data || error.message);
+    console.log('✅ STK RESPONSE:', response.data);
+
+    const responseCode = response.data?.ResponseCode;
+    if (responseCode !== '0' && responseCode !== 0) {
+      const errorMessage = response.data?.ResponseDescription || 'STK Push request rejected by Safaricom';
+      console.error('❌ M-Pesa STK push rejected:', response.data);
       return {
         success: false,
-        error: error.response?.data?.errorMessage || error.message
+        error: errorMessage,
+        response: response.data
       };
     }
+
+    return {
+      success: true,
+      checkoutRequestId: response.data.CheckoutRequestID,
+      responseCode,
+      message: response.data.ResponseDescription
+    };
+  } catch (error) {
+    console.error('🔥 SAFARICOM ERROR:', error.response?.data || error.message);
+    return {
+      success: false,
+      error: error.response?.data?.errorMessage || error.message
+    };
+  }
 };
 
 // Query Transaction Status

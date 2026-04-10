@@ -25,13 +25,13 @@ const testSTKPush = async () => {
         console.log('📝 Step 1: Creating test user...');
         const testUser = await User.create({
             name: 'Test Student',
-            phone: '0715255115',
+            phone: '254708374149',
             email: 'test@chukacribs.com',
             role: 'tenant'
         }).catch(err => {
             if (err.code === 11000) {
                 console.log('⚠️ User already exists, fetching...');
-                return User.findOne({ phone: '0715255115' });
+                return User.findOne({ phone: '254708374149' });
             }
             throw err;
         });
@@ -68,14 +68,14 @@ const testSTKPush = async () => {
         console.log('   Endpoint: POST /api/core/pay');
         console.log(`   Payload:`, JSON.stringify({
             bookingId: testBooking._id.toString(),
-            phone: '0715255115'
+            phone: '254715255115'
         }, null, 2));
 
         // Import the initiateSTKPush function
         const { initiateSTKPush } = require('./config/mpesa');
 
         console.log('\n⏳ Calling M-Pesa STK Push API...');
-        const stkResponse = await initiateSTKPush('0715255115', testRoom.price, testBooking._id.toString());
+        const stkResponse = await initiateSTKPush('254715255115', testRoom.price, testBooking._id.toString());
 
         console.log('\n✅ STK Push Response:');
         console.log(JSON.stringify(stkResponse, null, 2));
@@ -101,7 +101,7 @@ const testSTKPush = async () => {
         console.log('\n' + '='.repeat(60));
         console.log('✅ STK PUSH TEST COMPLETED SUCCESSFULLY');
         console.log('='.repeat(60));
-        console.log(`\n📱 Check your phone (0715255115) for the payment prompt!`);
+        console.log(`\n📱 Check your phone (254715255115) for the payment prompt!`);
         console.log(`\n🔍 Reference data:
    - Booking ID: ${testBooking._id}
    - Payment ID: ${payment?._id}

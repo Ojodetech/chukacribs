@@ -32,7 +32,6 @@ const authRouter = require('./routes/auth');
 const accessRouter = require('./routes/access');
 const landlordPropertiesRouter = require('./routes/landlord-properties');
 const paymentRouter = require('./routes/payment');
-const paymentsRouter = require('./routes/payments');
 const bookingsRouter = require('./routes/bookings');
 const smsRouter = require('./routes/sms');
 // const studentRouter = require('./routes/student');
@@ -644,7 +643,6 @@ app.use('/api/sms', smsRouter);
 app.use('/api/subscribe', subscribeRouter); // coming soon signups
 app.use('/api/landlord-properties', landlordPropertiesRouter);
 app.use('/api/payment', paymentLimiter, paymentRouter);
-app.use('/api/payments', paymentsRouter);
 app.use('/api/bookings', bookingLimiter, bookingsEnhancedRouter);
 app.use('/api/notifications', notificationsRouter);
 // app.use('/api/search', searchRouter);
