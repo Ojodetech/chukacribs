@@ -28,6 +28,7 @@ console.log('🔧 M-Pesa Configuration:', {
   hasConsumerKey: !!process.env.MPESA_CONSUMER_KEY,
   hasConsumerSecret: !!process.env.MPESA_CONSUMER_SECRET,
   hasBusinessShortcode: !!process.env.MPESA_BUSINESS_SHORTCODE,
+  hasTillNumber: !!process.env.MPESA_TILL_NUMBER,
   hasPasskey: !!process.env.MPESA_PASSKEY,
   hasCallbackUrl: !!process.env.MPESA_CALLBACK_URL
 });
@@ -98,10 +99,10 @@ const initiateSTKPush = async (phoneNumber, amount, orderId) => {
       BusinessShortCode: process.env.MPESA_BUSINESS_SHORTCODE,
       Password: password,
       Timestamp: timestamp,
-      TransactionType: 'CustomerPayBillOnline',
+      TransactionType: 'CustomerBuyGoodsOnline',
       Amount: Math.round(amount), // Ensure integer
       PartyA: formatPhoneNumber(phoneNumber), // Customer phone
-      PartyB: process.env.MPESA_BUSINESS_SHORTCODE, // Business shortcode
+      PartyB: process.env.MPESA_TILL_NUMBER || process.env.MPESA_BUSINESS_SHORTCODE, // Till number for buygoods
       PhoneNumber: formatPhoneNumber(phoneNumber),
       CallBackURL: callbackUrl,
       AccountReference: orderId,
@@ -113,48 +114,40 @@ const initiateSTKPush = async (phoneNumber, amount, orderId) => {
       payload: { ...payload, Password: '***HIDDEN***' }
     });
 
-    const response = await axios.post(STK_PUSH_URL, payload, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
+    try {
+      const response = await axios.post(STK_PUSH_URL, payload, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('✅ STK RESPONSE:', response.data);
+
+      const responseCode = response.data?.ResponseCode;
+      if (responseCode !== '0' && responseCode !== 0) {
+        const errorMessage = response.data?.ResponseDescription || 'STK Push request rejected by Safaricom';
+        console.error('❌ M-Pesa STK push rejected:', response.data);
+        return {
+          success: false,
+          error: errorMessage,
+          response: response.data
+        };
       }
-    });
 
-    console.log('📥 STK Push response from Safaricom:', {
-      status: response.status,
-      responseCode: response.data?.ResponseCode,
-      responseDescription: response.data?.ResponseDescription,
-      checkoutRequestId: response.data?.CheckoutRequestID
-    });
-
-    const responseCode = response.data?.ResponseCode;
-    if (responseCode !== '0' && responseCode !== 0) {
-      const errorMessage = response.data?.ResponseDescription || 'STK Push request rejected by Safaricom';
-      console.error('❌ M-Pesa STK push rejected:', response.data);
+      return {
+        success: true,
+        checkoutRequestId: response.data.CheckoutRequestID,
+        responseCode,
+        message: response.data.ResponseDescription
+      };
+    } catch (error) {
+      console.error('🔥 SAFARICOM ERROR:', error.response?.data || error.message);
       return {
         success: false,
-        error: errorMessage,
-        response: response.data
+        error: error.response?.data?.errorMessage || error.message
       };
     }
-
-    return {
-      success: true,
-      checkoutRequestId: response.data.CheckoutRequestID,
-      responseCode,
-      message: response.data.ResponseDescription
-    };
-  } catch (error) {
-    console.error('❌ Error initiating STK push:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status
-    });
-    return {
-      success: false,
-      error: error.response?.data?.errorMessage || error.message
-    };
-  }
 };
 
 // Query Transaction Status
