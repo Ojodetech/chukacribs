@@ -1,10 +1,38 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { initiateSTKPush, queryTransactionStatus, formatPhoneNumber } = require('../config/mpesa');
+const { initiateSTKPush, queryTransactionStatus } = require('../config/mpesa');
 const Token = require('../models/Token');
 const logger = require('../config/logger');
 
 const router = express.Router();
+
+/**
+ * Format phone number for M-Pesa
+ */
+const formatPhoneNumber = (phone) => {
+  if (!phone) return null;
+
+  // Remove spaces, dashes, etc
+  phone = phone.toString().replace(/\D/g, '');
+
+  // Handle 07XXXXXXXX
+  if (phone.startsWith('0') && phone.length === 10) {
+    return '254' + phone.substring(1);
+  }
+
+  // Handle 7XXXXXXXX
+  if (phone.length === 9 && phone.startsWith('7')) {
+    return '254' + phone;
+  }
+
+  // Handle +254XXXXXXXXX
+  if (phone.startsWith('254') && phone.length === 12) {
+    return phone;
+  }
+
+  // Invalid format
+  throw new Error('Invalid phone number format');
+};
 
 /**
  * POST /api/payment/initiate
