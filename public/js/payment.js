@@ -86,7 +86,7 @@ function handleFormSubmit(e) {
     showMpesaPrompt('Please check your phone for the M-Pesa prompt.');
 
     // send to backend
-    fetch('/api/payments/initiate', {
+    fetch('/api/payment/initiate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phoneNumber, email, amount })
@@ -134,7 +134,7 @@ function pollPaymentStatus(checkoutId) {
             return;
         }
 
-        fetch('/api/payments/query', {
+        fetch('/api/payment/query', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ orderTrackingId: checkoutId })

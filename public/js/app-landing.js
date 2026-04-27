@@ -540,7 +540,7 @@ function processPayment() {
                 window.showMpesaPrompt('Please check your phone for the M-Pesa prompt.');
             }
             
-            const response = await fetch('/api/payments/initiate', {
+            const response = await fetch('/api/payment/initiate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -619,7 +619,7 @@ function pollPaymentStatus(checkoutRequestId, phoneNumber) {
         }
         
         try {
-            const response = await fetch('/api/payments/query', {
+            const response = await fetch('/api/payment/query', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
