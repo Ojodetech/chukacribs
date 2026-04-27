@@ -114,6 +114,7 @@ body{font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;background:var(--bg
   .search-section{margin:-1.25rem auto 1rem;padding:1rem}
   .hero{padding:2rem 1rem;min-height:300px}
   .card-image{height:150px}
+  .landlord-link{background:var(--accent-gold) !important;color:#032033 !important;padding:0.75rem 1rem !important;border-radius:20px !important;font-weight:700 !important;margin:0.5rem 1rem !important;text-align:center !important;display:block !important;width:calc(100% - 2rem) !important}
 }
 
 @media(max-width:480px){
